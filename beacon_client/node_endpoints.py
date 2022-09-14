@@ -1,0 +1,2 @@
+class NodeEndpoints:
+    pass

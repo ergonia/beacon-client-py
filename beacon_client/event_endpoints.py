@@ -1,0 +1,2 @@
+class EventEndpoints:
+    pass
