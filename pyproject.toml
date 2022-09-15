@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "beacon-client"
+version = "0.1.0"
+description = "A Python Client for interacting with the Ethereum Beacon Chain API"
+authors = ["Benedict Brady"]
+readme = "README.md"
+packages = [{include = "beacon_client"}]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+requests = "^2.28.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
