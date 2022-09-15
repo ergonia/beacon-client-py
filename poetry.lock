@@ -44,6 +44,14 @@ socks = ["PySocks (>=1.5.6,!=1.5.7)"]
 use_chardet_on_py3 = ["chardet (>=3.0.2,<6)"]
 
 [[package]]
+name = "sseclient-py"
+version = "1.7.2"
+description = "SSE client for Python"
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "urllib3"
 version = "1.26.12"
 description = "HTTP library with thread-safe connection pooling, file post, and more."
@@ -59,7 +67,7 @@ socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "258402ead0622eb7a8fb2f46b5bfbe5da2d95c35e558ac7a92f97a8a696f4520"
+content-hash = "f491f1b59001c42ce1fc6eaf3ab09cdfa87ad1d0afe496b1a4fd20149e21103d"
 
 [metadata.files]
 certifi = [
@@ -77,6 +85,10 @@ idna = [
 requests = [
     {file = "requests-2.28.1-py3-none-any.whl", hash = "sha256:8fefa2a1a1365bf5520aac41836fbee479da67864514bdb821f31ce07ce65349"},
     {file = "requests-2.28.1.tar.gz", hash = "sha256:7c5599b102feddaa661c826c56ab4fee28bfd17f5abca1ebbe3e7f19d7c97983"},
+]
+sseclient-py = [
+    {file = "sseclient-py-1.7.2.tar.gz", hash = "sha256:ba3197d314766eccb72a1dda80b5fa14a0fbba07d796a287654c07edde88fe0f"},
+    {file = "sseclient_py-1.7.2-py2.py3-none-any.whl", hash = "sha256:a758653b13b78df42cdb696740635a26cb72ad433b75efb68dbbb163d099b6a9"},
 ]
 urllib3 = [
     {file = "urllib3-1.26.12-py2.py3-none-any.whl", hash = "sha256:b930dd878d5a8afb066a637fbb35144fe7901e3b209d1cd4f524bd0e9deee997"},

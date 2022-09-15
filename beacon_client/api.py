@@ -19,9 +19,9 @@ class BeaconChainAPI(
     def __init__(self, base_url: str):
         self.base_url = base_url
             
-    def _query_url(self, path):
+    def _query_url(self, path, stream=False, headers={"Accept": "application/json"}, params=None):
         url = urllib.parse.urljoin(self.base_url, path)
-        response = requests.get(url)
+        response = requests.get(url, stream=stream, headers=headers, params=params)
         assert response.status_code == 200, f"Status Code: {response.status_code} | {response.text}"
         return response.json()
 
