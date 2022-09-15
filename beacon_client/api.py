@@ -32,6 +32,8 @@ class BeaconChainAPI(
         assert response.status_code == 200, f"Status Code: {response.status_code} | {response.text}"
         if headers["Accept"] == "application/json":
             return response.json()
+        elif headers["Accept"] == "application/octet-stream":
+            return response.text
         else:
             return response
 
@@ -40,10 +42,9 @@ if __name__ == "__main__":
     from devtools import debug
     import json
     api = BeaconChainAPI("http://localhost:5052")
-    debug(api.get_committees_from_state(state_id="head", slot=4699884, index=63))
-    # for event in api.stream_events(head=True, block=True):
-    #     debug(
-    #         event.event,
-    #         json.loads(event.data),
-    #     )
-    
+    debug(api.get_block_from_block_id(block_id="head", response_type="json"))
+    for event in api.stream_events(head=True, block=True):
+        debug(
+            event.event,
+            json.loads(event.data),
+        )

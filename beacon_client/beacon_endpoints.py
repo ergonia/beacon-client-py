@@ -164,7 +164,7 @@ class BeaconEndpoints:
         '''
         return self._query_url(f"/eth/v1/beacon/headers/{block_id}")
     
-    def get_block_from_block_id(self, block_id, response_type: str = "json") -> dict:
+    def get_block_from_block_id(self, block_id, response_type: str = "json") -> Union[dict, str]:
         '''
         Retrieves block details for given block id. 
         Depending on Accept header it can be returned either as json or as bytes serialized by SSZ
@@ -175,7 +175,7 @@ class BeaconEndpoints:
             headers = {
                 "Accept": "application/json"
             }
-        if response_type == "json":
+        if response_type == "ssz":
             headers = {
                 "Accept": "application/octet-stream"
             }
