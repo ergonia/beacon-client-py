@@ -19,7 +19,6 @@ class BeaconChainAPI(
     def __init__(self, base_url: str):
         self.base_url = base_url
             
-    #### BEACON ENDPOINTS ####
     def _query_url(self, path):
         url = urllib.parse.urljoin(self.base_url, path)
         response = requests.get(url)
