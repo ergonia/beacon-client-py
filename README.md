@@ -19,3 +19,16 @@ for event in api.stream_events(head=True, block=True):
     print(event.event)
     print(json.loads(event.data))
 ```
+
+## Development
+
+Run the docs locally 
+
+```
+poetry run mkdocs serve
+```
+
+Formatter
+```
+poetry run black .
+```
