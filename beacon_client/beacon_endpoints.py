@@ -23,6 +23,9 @@ class BeaconEndpoints:
     def get_state_root(self, state_id: StateId) -> dict:
         """
         Calculates HashTreeRoot for state with given 'state_id'. If state_id is root, same value will be returned.
+        
+        Args:
+            state_id: element of [head, genesis, finalized, justified] or block number (int) or string starting with 0x
         """
         self._check_state_id(state_id)
         return self._query_url(f"/eth/v1/beacon/states/{state_id}/root")

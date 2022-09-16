@@ -1,0 +1,51 @@
+# mkdocs.yml
+site_name: beacon-client-py
+theme:
+  name: "material"
+  features:
+    - navigation.tabs
+    - navigation.top
+    - navigation.instant
+  palette:
+    - scheme: default
+      primary: deep purple
+      toggle:
+        icon: material/toggle-switch-off-outline
+        name: Switch to dark mode
+    - scheme: slate
+      toggle:
+        icon: material/toggle-switch
+        name: Switch to light mode
+
+markdown_extensions:
+  - pymdownx.highlight
+  - pymdownx.superfences
+  - admonition
+  - pymdownx.snippets
+  - meta
+  - pymdownx.tabbed:
+      alternate_style: true
+
+plugins:
+  - mkdocstrings:
+      handlers:
+        python:
+          selection:
+            filters:
+              - "!^_" # exlude all members starting with _
+              - "^__init__$" # but always include __init__ modules and methods
+          rendering:
+            show_root_heading: true
+            show_bases: false
+  - search
+
+nav:
+  - index.md
+  - beacon_endpoints.md
+  - config_endpoints.md
+  - debug_endpoints.md
+  - event_endpoints.md
+  - node_endpoints.md
+  - validator_endpoints.md
+extra_css:
+  - css/mkdocstrings.css
