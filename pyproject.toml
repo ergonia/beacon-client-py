@@ -14,6 +14,7 @@ sseclient-py = "^1.7.2"
 
 [tool.poetry.group.dev.dependencies]
 devtools = {extras = ["pygments"], version = "^0.9.0"}
+black = "^22.8.0"
 
 [build-system]
 requires = ["poetry-core"]

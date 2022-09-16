@@ -1,6 +1,8 @@
 # beacon-client-py
 A Python client for interacting with the Ethereum Beacon Chain API
 
+Reference: https://ethereum.github.io/beacon-APIs/
+
 ## Simple Example
 
 ```

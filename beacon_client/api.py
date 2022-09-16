@@ -15,21 +15,23 @@ class BeaconChainAPI(
     DebugEndpoints,
     EventEndpoints,
     NodeEndpoints,
-    ValidatorEndpoints
+    ValidatorEndpoints,
 ):
     def __init__(self, base_url: str):
         self.base_url = base_url
-            
+
     def _query_url(
-        self, 
-        path: str, 
-        stream: bool = False, 
-        headers: dict = {"Accept": "application/json"}, 
-        params: Union[dict, None] = None
+        self,
+        path: str,
+        stream: bool = False,
+        headers: dict = {"Accept": "application/json"},
+        params: Union[dict, None] = None,
     ):
         url = urllib.parse.urljoin(self.base_url, path)
         response = requests.get(url, stream=stream, headers=headers, params=params)
-        assert response.status_code == 200, f"Status Code: {response.status_code} | {response.text}"
+        assert (
+            response.status_code == 200
+        ), f"Status Code: {response.status_code} | {response.text}"
         if headers["Accept"] == "application/json":
             return response.json()
         elif headers["Accept"] == "application/octet-stream":
@@ -41,9 +43,10 @@ class BeaconChainAPI(
 if __name__ == "__main__":
     from devtools import debug
     import json
+
     api = BeaconChainAPI("http://localhost:5052")
     debug(api.get_block_from_block_id(block_id="head", response_type="json"))
-    for event in api.stream_events(head=True, block=True):
+    for event in api.stream_events(attestation=True):
         debug(
             event.event,
             json.loads(event.data),
