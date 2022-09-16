@@ -4,7 +4,7 @@ A Python client for interacting with the Ethereum Beacon Chain API
 ## Simple Example
 
 ```
-from beacon_chain.api import BeaconChainAPI
+from beacon_client.api import BeaconChainAPI
 
 
 api = BeaconChainAPI("http://localhost:5052")
