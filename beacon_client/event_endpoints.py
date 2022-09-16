@@ -15,6 +15,14 @@ class EventEndpoints:
         """
         Provides endpoint to subscribe to beacon node Server-Sent-Events stream
         Returns an Event object with the event name (event.name: str) and the contents (event.data: str)
+        Args:
+            head: If true return events of type head
+            block: If true return events of type block
+            attestation: If true return events of type attestation
+            voluntary_exit: If true return events of type voluntary_exit
+            finalized_checkpoint: If true return events of type finalized_checkpoint
+            chain_reorg: If true return events of type chain_reorg
+            contribution_and_proof: If true return events of type contribution_and_proof
         """
         events = []
         if head:

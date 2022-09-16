@@ -18,6 +18,13 @@ class NodeEndpoints:
         Retrieves data about the node's network peers.
         By default this returns all peers.
         Multiple query params are combined using AND conditions
+        Args:
+            disconnected: If true return nodes with status disconnected
+            disconnecting: If true return nodes with status disconnecting
+            connected: If true return nodes with status connected
+            connecting: If true return nodes with status connecting
+            inbound: If true return nodes with direction inbound
+            outbound: If true return nodes with direction outbound
         """
         state = []
         direction = []
@@ -45,6 +52,8 @@ class NodeEndpoints:
     def get_peer_by_id(self, peer_id: str):
         """
         Retrieves data about the given peer
+        Args:
+            peer_id: Return peer for given peer id
         """
         return self._query_url(f"/eth/v1/node/peers/{peer_id}")
 

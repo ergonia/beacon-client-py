@@ -23,9 +23,9 @@ class BeaconEndpoints:
     def get_state_root(self, state_id: StateId) -> dict:
         """
         Calculates HashTreeRoot for state with given 'state_id'. If state_id is root, same value will be returned.
-        
+
         Args:
-            state_id: element of [head, genesis, finalized, justified] or block number (int) or string starting with 0x
+            state_id: Element of [head, genesis, finalized, justified] or block number (int) or string starting with 0x
         """
         self._check_state_id(state_id)
         return self._query_url(f"/eth/v1/beacon/states/{state_id}/root")
@@ -33,6 +33,8 @@ class BeaconEndpoints:
     def get_fork_from_state(self, state_id: StateId) -> dict:
         """
         Returns Fork object for state with given 'state_id'.
+        Args:
+            state_id: Element of [head, genesis, finalized, justified] or block number (int) or string starting with 0x
         """
         self._check_state_id(state_id)
         return self._query_url(f"/eth/v1/beacon/states/{state_id}/fork")
@@ -41,6 +43,8 @@ class BeaconEndpoints:
         """
         Returns finality checkpoints for state with given 'state_id'.
         In case finality is not yet achieved, checkpoint should return epoch 0 and ZERO_HASH as root.
+        Args:
+            state_id: Element of [head, genesis, finalized, justified] or block number (int) or string starting with 0x
         """
         self._check_state_id(state_id)
         return self._query_url(f"/eth/v1/beacon/states/{state_id}/finality_checkpoints")
@@ -71,6 +75,22 @@ class BeaconEndpoints:
         There are no guarantees for the returned data in terms of ordering;
         both the index and public key are returned for each validator,
         and can be used to confirm for which inputs a response has been returned.
+        Args:
+            state_id: Element of [head, genesis, finalized, justified] or block number (int) or string starting with 0x
+            validator_list: List of validators identified by public key or validator index
+            pending_initialized: If true return validators with this status
+            pending_queued: If true return validators with this status
+            active_ongoing: If true return validators with this status
+            active_exiting: If true return validators with this status
+            active_slashed: If true return validators with this status
+            exited_unslashed: If true return validators with this status
+            exited_slashed: If true return validators with this status
+            withdrawal_possible: If true return validators with this status
+            withdrawal_done: If true return validators with this status
+            active: If true return validators with this status
+            pending: If true return validators with this status
+            exited: If true return validators with this status
+            withdrawal: If true return validators with this status
         """
         self._check_state_id(state_id)
         status = []
@@ -109,6 +129,9 @@ class BeaconEndpoints:
     def get_validators_from_state_by_id(self, state_id: StateId, validator_id) -> dict:
         """
         Returns validator specified by state and id or public key along with status and balance.
+        Args:
+            state_id: Element of [head, genesis, finalized, justified] or block number (int) or string starting with 0x
+            validator_id: Validator identified by public key or validator index
         """
         self._check_state_id(state_id)
         return self._query_url(
@@ -126,6 +149,9 @@ class BeaconEndpoints:
         There are no guarantees for the returned data in terms of ordering;
         the index and is returned for each balance,
         and can be used to confirm for which inputs a response has been returned.
+        Args:
+            state_id: Element of [head, genesis, finalized, justified] or block number (int) or string starting with 0x
+            validator_list: List of validators identified by public key or validator index
         """
         params = {"id": validator_list}
         return self._query_url(
@@ -141,6 +167,11 @@ class BeaconEndpoints:
     ) -> dict:
         """
         Retrieves the committees for the given state.
+        Args:
+            state_id: Element of [head, genesis, finalized, justified] or block number (int) or string starting with 0x
+            epoch: Fetch committees for the given epoch. If not present then the committees for the epoch of the state will be obtained
+            index: Restrict returned values to those matching the supplied committee index
+            slot: Restrict returned values to those matching the supplied slot
         """
         params = {"epoch": epoch, "index": index, "slot": slot}
         return self._query_url(
@@ -148,10 +179,13 @@ class BeaconEndpoints:
         )
 
     def get_sync_committees_from_state(
-        self, state_id, epoch: Union[int, None] = None
+        self, state_id: StateId, epoch: Union[int, None] = None
     ) -> dict:
         """
         Retrieves the sync committees for the given state.
+        Args:
+            state_id: Element of [head, genesis, finalized, justified] or block number (int) or string starting with 0x
+            epoch: Fetch committees for the given epoch. If not present then the committees for the epoch of the state will be obtained
         """
         params = {
             "epoch": epoch,
@@ -165,6 +199,9 @@ class BeaconEndpoints:
     ) -> dict:
         """
         Retrieves block headers matching given query. By default it will fetch current head slot blocks.
+        Args:
+            slot: Restrict returned values to those matching the supplied slot
+            parent_root: Restrict returned values to those matching the supplied parent_root
         """
         params = {"slot": slot, "parent_root": parent_root}
         return self._query_url("/eth/v1/beacon/headers", params=params)
@@ -172,6 +209,8 @@ class BeaconEndpoints:
     def get_headers_from_block_id(self, block_id) -> dict:
         """
         Retrieves block headers matching given query. By default it will fetch current head slot blocks.
+        Args:
+            block_id: Return block header matching given block id
         """
         return self._query_url(f"/eth/v1/beacon/headers/{block_id}")
 
@@ -182,6 +221,9 @@ class BeaconEndpoints:
         Retrieves block details for given block id.
         Depending on Accept header it can be returned either as json or as bytes serialized by SSZ
         response_type in [json, ssz]
+        Args:
+            block_id: Return block matching given block id
+            response_type: Element of [json, szz] that determines the return type
         """
         assert response_type in ["json", "ssz"], "response_type must be in [json, ssz]"
         if response_type == "json":
@@ -193,12 +235,16 @@ class BeaconEndpoints:
     def get_block_root_from_block_id(self, block_id) -> dict:
         """
         Retrieves hashTreeRoot of BeaconBlock/BeaconBlockHeader
+        Args:
+            block_id: Return block root matching given block id
         """
         return self._query_url(f"/eth/v1/beacon/blocks/{block_id}/root")
 
     def get_attestations_from_block_id(self, block_id) -> dict:
         """
         Retrieves attestation included in requested block.
+        Args:
+            block_id: Return attestations matching given block id
         """
         return self._query_url(f"/eth/v1/beacon/blocks/{block_id}/attestations")
 
@@ -207,6 +253,9 @@ class BeaconEndpoints:
     ) -> dict:
         """
         Retrieves attestations known by the node but not necessarily incorporated into any block
+        Args:
+            slot: Restrict returned values to those matching the supplied slot
+            committee_index: Restrict returned values to those matching the supplied committee index
         """
         params = {"slot": slot, "committee_index": committee_index}
         return self._query_url("/eth/v1/beacon/pool/attestations", params=params)
