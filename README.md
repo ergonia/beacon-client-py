@@ -32,3 +32,8 @@ Formatter
 ```
 poetry run black .
 ```
+
+Tests
+```
+pytest
+```
