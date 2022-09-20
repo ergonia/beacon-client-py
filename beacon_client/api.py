@@ -50,8 +50,8 @@ if __name__ == "__main__":
             "message"
         ]["slot"]
     )
-    # for event in api.stream_events(attestation=True):
-    #     debug(
-    #         event.event,
-    #         json.loads(event.data),
-    #     )
+    for event in api.stream_events(attestation=True):
+        debug(
+            event.event,
+            json.loads(event.data),
+        )

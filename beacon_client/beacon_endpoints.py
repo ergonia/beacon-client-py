@@ -3,6 +3,7 @@ from typing import Union
 
 class BeaconEndpoints:
     StateId = Union[str, int]
+    ValidatorId = Union[str, int]
 
     @staticmethod
     def _check_state_id(state_id: StateId) -> None:
@@ -13,6 +14,13 @@ class BeaconEndpoints:
                 "finalized",
                 "justified",
             ], "state_id must be in [head, genesis, finalized, justified] or block number (int) or start with 0x"
+
+    @staticmethod
+    def _check_validator_id(validator_id: ValidatorId) -> None:
+        if isinstance(validator_id, str):
+            assert validator_id.startswith(
+                "0x"
+            ), "validator_id must be an index (int) or start with 0x"
 
     def get_genesis(self) -> dict:
         """
@@ -52,7 +60,7 @@ class BeaconEndpoints:
     def get_validators_from_state(
         self,
         state_id: StateId,
-        validator_list: Union[list, None] = None,
+        validator_list: Union[list[ValidatorId], None] = None,
         pending_initialized: bool = False,
         pending_queued: bool = False,
         active_ongoing: bool = False,
@@ -126,7 +134,9 @@ class BeaconEndpoints:
             f"/eth/v1/beacon/states/{state_id}/validators", params=params
         )
 
-    def get_validators_from_state_by_id(self, state_id: StateId, validator_id) -> dict:
+    def get_validators_from_state_by_id(
+        self, state_id: StateId, validator_id: ValidatorId
+    ) -> dict:
         """
         Returns validator specified by state and id or public key along with status and balance.
         Args:
@@ -134,6 +144,7 @@ class BeaconEndpoints:
             validator_id: Validator identified by public key or validator index
         """
         self._check_state_id(state_id)
+        self._check_validator_id(validator_id)
         return self._query_url(
             f"/eth/v1/beacon/states/{state_id}/validators/{validator_id}"
         )
