@@ -35,5 +35,5 @@ poetry run black .
 
 Tests
 ```
-poetry run pytest
+poetry run pytest -vv
 ```

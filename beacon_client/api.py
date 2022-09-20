@@ -1,12 +1,12 @@
 import requests
 import urllib.parse
 from typing import Union
-from beacon_client.beacon_endpoints import BeaconEndpoints
-from beacon_client.config_endpoints import ConfigEndpoints
-from beacon_client.debug_endpoints import DebugEndpoints
-from beacon_client.event_endpoints import EventEndpoints
-from beacon_client.node_endpoints import NodeEndpoints
-from beacon_client.validator_endpoints import ValidatorEndpoints
+from .beacon_endpoints import BeaconEndpoints
+from .config_endpoints import ConfigEndpoints
+from .debug_endpoints import DebugEndpoints
+from .event_endpoints import EventEndpoints
+from .node_endpoints import NodeEndpoints
+from .validator_endpoints import ValidatorEndpoints
 
 
 class BeaconChainAPI(
