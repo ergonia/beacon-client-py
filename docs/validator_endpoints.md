@@ -1,5 +1,5 @@
 # Validator Endpoints
 
-#### Currently unimplemented
+#### Currently mostly unimplemented
 
 ::: beacon_client.validator_endpoints.ValidatorEndpoints
