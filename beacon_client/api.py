@@ -38,20 +38,3 @@ class BeaconChainAPI(
             return response.text
         else:
             return response
-
-
-if __name__ == "__main__":
-    from devtools import debug
-    import json
-
-    api = BeaconChainAPI("http://localhost:5052")
-    debug(
-        api.get_block_from_block_id(block_id="head", response_type="json")["data"][
-            "message"
-        ]["slot"]
-    )
-    for event in api.stream_events(attestation=True):
-        debug(
-            event.event,
-            json.loads(event.data),
-        )
