@@ -19,7 +19,7 @@ from .types import (
     ValidatorStatus,
     BLSPubkey,
     Bytes32,
-    PendingInitialized
+    TypeHooks
 )
 
 
@@ -89,7 +89,7 @@ class BeaconEndpoints:
             data_class=FinalityCheckpoints,
             data=value["data"],
             config=Config(
-                cast=[Epoch, Root], type_hooks={Epoch: lambda x: Epoch(int(x))}
+                cast=[Epoch, Root], type_hooks=TypeHooks
             ),
         )
         return data
@@ -170,13 +170,13 @@ class BeaconEndpoints:
         value = self._query_url(
             f"/eth/v1/beacon/states/{state_id}/validators", params=params
         )
-        print(value["data"][0])
         data = [
             from_dict(
                 data_class=ValidatorSummary,
                 data=validator,
                 config=Config(
-                    cast=[Gwei, Validator, ValidatorStatus, BLSPubkey, Bytes32, PendingInitialized]
+                    cast=[ValidatorStatus],
+                    type_hooks=TypeHooks
                 ),
             )
             for validator in value["data"][0:1]

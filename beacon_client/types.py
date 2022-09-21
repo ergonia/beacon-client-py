@@ -1,7 +1,8 @@
 from typing import NewType, Union, List
+from enum import Enum
 from dataclasses import dataclass
 from bitstring import BitArray
-
+from dacite import from_dict, Config
 
 # CONSTANTS
 
@@ -61,67 +62,6 @@ StateId = Union[Slot, Root, Head, Genesis, Justified, Finalized]
 BlockId = Union[Slot, Root, Head, Genesis, Finalized]
 PeerId = NewType("PeerId", str)
 
-PendingInitialized = "pending_initialized"
-PendingQueued = "pending_queued"
-ActiveOngoing = "active_ongoing"
-ActiveExiting = "active_exiting"
-ActiveSlashed = "active_slashed"
-ExitedUnslashed = "exited_unslashed"
-ExitedSlashed = "exited_slashed"
-WithdrawalPossible = "withdrawal_possible"
-WithdrawalDone = "withdrawal_done"
-Active = "active"
-Pending = "pending"
-Exited = "exited"
-Withdrawal = "withdrawal"
-ValidatorStatus = Union[
-    PendingInitialized,
-    PendingQueued,
-    ActiveOngoing,
-    ActiveExiting,
-    ActiveSlashed,
-    ExitedUnslashed,
-    ExitedSlashed,
-    WithdrawalPossible,
-    WithdrawalDone,
-    Active,
-    Pending,
-    Exited,
-    Withdrawal,
-]
-
-Disconnected = "disconnected"
-Connecting = "connecting"
-Connected = "connected"
-Disconnecting = "disconnecting"
-PeerState = Union[Disconnected, Connecting, Connected, Disconnecting]
-
-Head = "head"
-Block = "block"
-Attestation = "attestation"
-VoluntaryExit = "voluntary_exit"
-FinalizedCheckpoint = "finalized_checkpoint"
-ChainReorg = "chain_reorg"
-ContributionAndProof = "contribution_and_proof"
-EventTopic = Union[
-    Head,
-    Block,
-    Attestation,
-    VoluntaryExit,
-    FinalizedCheckpoint,
-    ChainReorg,
-    ContributionAndProof,
-]
-
-Inbound = "inbound"
-Outbound = "outbound"
-ConnectionOrientation = Union[Inbound, Outbound]
-
-Ready = "ready"
-Syncing = "syncing"
-NotInitialized = "not_initizlized"
-Unknown = "unknown"
-HealthStatus = Union[Ready, Syncing, NotInitialized, Unknown]
 
 CommitteeIndex = NewType("CommitteeIndex", int)
 ValidatorIndex = NewType("ValidatorIndex", int)
@@ -134,6 +74,51 @@ BLSPubkey = NewType("BLSPubkey", str)
 BLSSignature = NewType("BLSSignature", str)
 ValidatorId = Union[ValidatorIndex, BLSPubkey]
 Bytes32 = NewType("Bytes32", str)
+
+
+class ValidatorStatus(Enum):
+    PendingInitialized = "pending_initialized"
+    PendingQueued = "pending_queued"
+    ActiveOngoing = "active_ongoing"
+    ActiveExiting = "active_exiting"
+    ActiveSlashed = "active_slashed"
+    ExitedUnslashed = "exited_unslashed"
+    ExitedSlashed = "exited_slashed"
+    WithdrawalPossible = "withdrawal_possible"
+    WithdrawalDone = "withdrawal_done"
+    Active = "active"
+    Pending = "pending"
+    Exited = "exited"
+    Withdrawal = "withdrawal"
+
+
+class PeerState(Enum):
+    Disconnected = "disconnected"
+    Connecting = "connecting"
+    Connected = "connected"
+    Disconnecting = "disconnecting"
+
+
+class EventTopic(Enum):
+    Head = "head"
+    Block = "block"
+    Attestation = "attestation"
+    VoluntaryExit = "voluntary_exit"
+    FinalizedCheckpoint = "finalized_checkpoint"
+    ChainReorg = "chain_reorg"
+    ContributionAndProof = "contribution_and_proof"
+
+
+class ConnectionOrientation(Enum):
+    Inbound = "inbound"
+    Outbound = "outbound"
+
+
+class HealthStatus:
+    Ready = "ready"
+    Syncing = "syncing"
+    NotInitialized = "not_initizlized"
+    Unknown = "unknown"
 
 
 # COMPLEX TYPES
@@ -395,3 +380,17 @@ class BeaconHeaderSummary:
 class PeerDescriptor:
     state: PeerState
     direction: ConnectionOrientation
+
+
+TypeHooks = {
+    Gwei: lambda x: Gwei(int(x)),
+    ValidatorIndex: lambda x: ValidatorIndex(int(x)),
+    Epoch: lambda x: Epoch(int(x)),
+    Validator: lambda x: from_dict(
+        data_class=Validator,
+        data=x,
+        config=Config(
+            type_hooks={Epoch: lambda x: Epoch(int(x)), Gwei: lambda x: Gwei(int(x))}
+        ),
+    ),
+}
