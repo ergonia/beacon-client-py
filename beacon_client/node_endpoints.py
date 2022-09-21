@@ -1,3 +1,6 @@
+from .types import PeerId
+
+
 class NodeEndpoints:
     def get_node_identity(self):
         """
@@ -49,7 +52,7 @@ class NodeEndpoints:
         params = {"state": state, "direction": direction}
         return self._query_url("/eth/v1/node/peers", params=params)
 
-    def get_peer_by_id(self, peer_id: str):
+    def get_peer_by_id(self, peer_id: PeerId):
         """
         Retrieves data about the given peer
         Args:

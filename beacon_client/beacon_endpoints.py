@@ -1,10 +1,17 @@
-from typing import Union
+from typing import Union, List
+from .types import (
+    StateId,
+    ValidatorId,
+    ValidatorIndex,
+    CommitteeIndex,
+    BlockId,
+    Epoch,
+    Slot,
+    Root,
+)
 
 
 class BeaconEndpoints:
-    StateId = Union[str, int]
-    ValidatorId = Union[str, int]
-
     @staticmethod
     def _check_state_id(state_id: StateId) -> None:
         if isinstance(state_id, str) and not state_id.startswith("0x"):
@@ -60,7 +67,7 @@ class BeaconEndpoints:
     def get_validators_from_state(
         self,
         state_id: StateId,
-        validator_list: Union[list[ValidatorId], None] = None,
+        validator_list: Union[List[ValidatorId], None] = None,
         pending_initialized: bool = False,
         pending_queued: bool = False,
         active_ongoing: bool = False,
@@ -150,7 +157,7 @@ class BeaconEndpoints:
         )
 
     def get_validators_balances_from_state(
-        self, state_id: StateId, validator_list: Union[list, None] = None
+        self, state_id: StateId, validator_list: Union[List[ValidatorId], None] = None
     ) -> dict:
         """
         Returns filterable list of validators balances.
@@ -172,9 +179,9 @@ class BeaconEndpoints:
     def get_committees_from_state(
         self,
         state_id: StateId,
-        epoch: Union[int, None] = None,
-        index: Union[int, None] = None,
-        slot: Union[int, None] = None,
+        epoch: Union[Epoch, None] = None,
+        index: Union[ValidatorIndex, None] = None,
+        slot: Union[Slot, None] = None,
     ) -> dict:
         """
         Retrieves the committees for the given state.
@@ -190,7 +197,7 @@ class BeaconEndpoints:
         )
 
     def get_sync_committees_from_state(
-        self, state_id: StateId, epoch: Union[int, None] = None
+        self, state_id: StateId, epoch: Union[Epoch, None] = None
     ) -> dict:
         """
         Retrieves the sync committees for the given state.
@@ -206,7 +213,7 @@ class BeaconEndpoints:
         )
 
     def get_headers(
-        self, slot: Union[int, None] = None, parent_root: Union[str, None] = None
+        self, slot: Union[Slot, None] = None, parent_root: Union[Root, None] = None
     ) -> dict:
         """
         Retrieves block headers matching given query. By default it will fetch current head slot blocks.
@@ -217,7 +224,7 @@ class BeaconEndpoints:
         params = {"slot": slot, "parent_root": parent_root}
         return self._query_url("/eth/v1/beacon/headers", params=params)
 
-    def get_headers_from_block_id(self, block_id) -> dict:
+    def get_headers_from_block_id(self, block_id: BlockId) -> dict:
         """
         Retrieves block headers matching given query. By default it will fetch current head slot blocks.
         Args:
@@ -226,7 +233,7 @@ class BeaconEndpoints:
         return self._query_url(f"/eth/v1/beacon/headers/{block_id}")
 
     def get_block_from_block_id(
-        self, block_id, response_type: str = "json"
+        self, block_id: BlockId, response_type: str = "json"
     ) -> Union[dict, str]:
         """
         Retrieves block details for given block id.
@@ -243,7 +250,7 @@ class BeaconEndpoints:
             headers = {"Accept": "application/octet-stream"}
         return self._query_url(f"/eth/v2/beacon/blocks/{block_id}", headers=headers)
 
-    def get_block_root_from_block_id(self, block_id) -> dict:
+    def get_block_root_from_block_id(self, block_id: BlockId) -> dict:
         """
         Retrieves hashTreeRoot of BeaconBlock/BeaconBlockHeader
         Args:
@@ -251,7 +258,7 @@ class BeaconEndpoints:
         """
         return self._query_url(f"/eth/v1/beacon/blocks/{block_id}/root")
 
-    def get_attestations_from_block_id(self, block_id) -> dict:
+    def get_attestations_from_block_id(self, block_id: BlockId) -> dict:
         """
         Retrieves attestation included in requested block.
         Args:
@@ -260,7 +267,9 @@ class BeaconEndpoints:
         return self._query_url(f"/eth/v1/beacon/blocks/{block_id}/attestations")
 
     def get_pool_attestations(
-        self, slot: Union[int, None] = None, committee_index: Union[int, None] = None
+        self,
+        slot: Union[Slot, None] = None,
+        committee_index: Union[CommitteeIndex, None] = None,
     ) -> dict:
         """
         Retrieves attestations known by the node but not necessarily incorporated into any block
