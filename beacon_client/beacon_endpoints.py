@@ -1,4 +1,5 @@
 from typing import Union, List
+from dacite import from_dict, Config
 from .types import (
     StateId,
     ValidatorId,
@@ -8,6 +9,17 @@ from .types import (
     Epoch,
     Slot,
     Root,
+    GenesisDetails,
+    Version,
+    Checkpoint,
+    FinalityCheckpoints,
+    ValidatorSummary,
+    Gwei,
+    Validator,
+    ValidatorStatus,
+    BLSPubkey,
+    Bytes32,
+    PendingInitialized
 )
 
 
@@ -29,21 +41,28 @@ class BeaconEndpoints:
                 "0x"
             ), "validator_id must be an index (int) or start with 0x"
 
-    def get_genesis(self) -> dict:
+    def get_genesis(self) -> GenesisDetails:
         """
         Retrieve details of the chain's genesis which can be used to identify chain.
         """
-        return self._query_url("/eth/v1/beacon/genesis")
+        value = self._query_url("/eth/v1/beacon/genesis")
+        data = from_dict(
+            data_class=GenesisDetails,
+            data=value["data"],
+            config=Config(cast=[Version, int, Root]),
+        )
+        return data
 
-    def get_state_root(self, state_id: StateId) -> dict:
+    def get_state_root(self, state_id: StateId) -> Root:
         """
         Calculates HashTreeRoot for state with given 'state_id'. If state_id is root, same value will be returned.
 
         Args:
             state_id: Element of [head, genesis, finalized, justified] or block number (int) or string starting with 0x
         """
-        self._check_state_id(state_id)
-        return self._query_url(f"/eth/v1/beacon/states/{state_id}/root")
+        value = self._query_url(f"/eth/v1/beacon/states/{state_id}/root")
+        data = Root(value["data"]["root"])
+        return data
 
     def get_fork_from_state(self, state_id: StateId) -> dict:
         """
@@ -51,8 +70,9 @@ class BeaconEndpoints:
         Args:
             state_id: Element of [head, genesis, finalized, justified] or block number (int) or string starting with 0x
         """
-        self._check_state_id(state_id)
-        return self._query_url(f"/eth/v1/beacon/states/{state_id}/fork")
+        value = self._query_url(f"/eth/v1/beacon/states/{state_id}/fork")
+        # data = from_dict(data_class=)
+        return value
 
     def get_finality_checkpoints_from_state(self, state_id: StateId) -> dict:
         """
@@ -61,8 +81,18 @@ class BeaconEndpoints:
         Args:
             state_id: Element of [head, genesis, finalized, justified] or block number (int) or string starting with 0x
         """
-        self._check_state_id(state_id)
-        return self._query_url(f"/eth/v1/beacon/states/{state_id}/finality_checkpoints")
+        value = self._query_url(
+            f"/eth/v1/beacon/states/{state_id}/finality_checkpoints"
+        )
+        print(value["data"])
+        data = from_dict(
+            data_class=FinalityCheckpoints,
+            data=value["data"],
+            config=Config(
+                cast=[Epoch, Root], type_hooks={Epoch: lambda x: Epoch(int(x))}
+            ),
+        )
+        return data
 
     def get_validators_from_state(
         self,
@@ -137,9 +167,21 @@ class BeaconEndpoints:
             status.append("withdrawal")
         assert len(status) > 0, "Select at least one validator condition"
         params = {"status": status, "id": validator_list}
-        return self._query_url(
+        value = self._query_url(
             f"/eth/v1/beacon/states/{state_id}/validators", params=params
         )
+        print(value["data"][0])
+        data = [
+            from_dict(
+                data_class=ValidatorSummary,
+                data=validator,
+                config=Config(
+                    cast=[Gwei, Validator, ValidatorStatus, BLSPubkey, Bytes32, PendingInitialized]
+                ),
+            )
+            for validator in value["data"][0:1]
+        ]
+        return data
 
     def get_validators_from_state_by_id(
         self, state_id: StateId, validator_id: ValidatorId

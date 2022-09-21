@@ -1,4 +1,5 @@
 from beacon_client.api import BeaconChainAPI
+from beacon_client.types import GenesisDetails, FinalityCheckpoints, Checkpoint, Root
 import pytest
 
 
@@ -12,23 +13,18 @@ class TestBeaconEndpoints:
     client = BeaconChainAPI("http://localhost:5052")
 
     def test_genesis(self):
-        expected = {
-            "data": {
-                "genesis_fork_version": "0x00000000",
-                "genesis_time": "1606824023",
-                "genesis_validators_root": "0x4b363db94e286120d76eb905340fdd4e54bfe9f06bf33ff6cf5ad27f511bfe95",
-            }
-        }
+        expected = GenesisDetails(
+            genesis_fork_version="0x00000000",
+            genesis_time=1606824023,
+            genesis_validators_root="0x4b363db94e286120d76eb905340fdd4e54bfe9f06bf33ff6cf5ad27f511bfe95",
+        )
         actual = self.client.get_genesis()
         assert actual == expected
 
     def test_get_state_root(self):
-        expected = {
-            "data": {
-                "root": "0xc719e01b197a5a2f8f1796e11122009b845d95a19538baaa49362c04f4c74480"
-            },
-            "execution_optimistic": True,
-        }
+        expected = Root(
+            "0xc719e01b197a5a2f8f1796e11122009b845d95a19538baaa49362c04f4c74480"
+        )
         actual = self.client.get_state_root(state_id=4733490)
         assert actual == expected
 
@@ -38,23 +34,20 @@ class TestBeaconEndpoints:
 
     @slow_test
     def test_get_finality_checkpoints_from_state(self):
-        expected = {
-            "data": {
-                "current_justified": {
-                    "epoch": "147920",
-                    "root": "0xd7aef74c750474d7a9af76c210fb5c0adb361d59571266a08e91b09182339a98",
-                },
-                "finalized": {
-                    "epoch": "147919",
-                    "root": "0xdac10002454d05664bb832b822131da6d7b0bbc17fa21fff8a376547a043a6ad",
-                },
-                "previous_justified": {
-                    "epoch": "147919",
-                    "root": "0xdac10002454d05664bb832b822131da6d7b0bbc17fa21fff8a376547a043a6ad",
-                },
-            },
-            "execution_optimistic": False,
-        }
+        expected = FinalityCheckpoints(
+            current_justified=Checkpoint(
+                epoch=147920,
+                root="0xd7aef74c750474d7a9af76c210fb5c0adb361d59571266a08e91b09182339a98",
+            ),
+            finalized=Checkpoint(
+                epoch=147919,
+                root="0xdac10002454d05664bb832b822131da6d7b0bbc17fa21fff8a376547a043a6ad",
+            ),
+            previous_justified=Checkpoint(
+                epoch=147919,
+                root="0xdac10002454d05664bb832b822131da6d7b0bbc17fa21fff8a376547a043a6ad",
+            ),
+        )
         actual = self.client.get_finality_checkpoints_from_state(state_id=4733490)
         assert actual == expected
 

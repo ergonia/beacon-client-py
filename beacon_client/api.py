@@ -38,3 +38,8 @@ class BeaconChainAPI(
             return response.text
         else:
             return response
+
+
+if __name__ == "__main__":
+    client = BeaconChainAPI("http://localhost:5052")
+    print(client.get_validators_from_state(state_id="head", active=True))

@@ -126,7 +126,7 @@ HealthStatus = Union[Ready, Syncing, NotInitialized, Unknown]
 CommitteeIndex = NewType("CommitteeIndex", int)
 ValidatorIndex = NewType("ValidatorIndex", int)
 Gwei = NewType("Gwei", int)
-Version = NewType("Version", int)
+Version = NewType("Version", str)
 DomainType = NewType("DomainType", str)
 ForkDigest = NewType("ForkDigest", str)
 Domain = NewType("Domain", str)
@@ -345,16 +345,9 @@ class SignedBeaconBlock:
 
 @dataclass
 class GenesisDetails:
-    genesis_fork_version: Root
-    genesis_time: int
     genesis_fork_version: Version
-
-
-@dataclass
-class GenesisDetails:
-    genesis_fork_version: Root
     genesis_time: int
-    genesis_fork_version: Version
+    genesis_validators_root: Root
 
 
 @dataclass
@@ -366,7 +359,7 @@ class FinalityCheckpoints:
 
 @dataclass
 class ValidatorSummary:
-    index: Validatorindex
+    index: ValidatorIndex
     balance: Gwei
     status: ValidatorStatus
     validator: Validator
