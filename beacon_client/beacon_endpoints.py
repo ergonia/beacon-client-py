@@ -17,9 +17,9 @@ from .types import (
     Gwei,
     Validator,
     ValidatorStatus,
-    BLSPubkey,
-    Bytes32,
-    TypeHooks
+    TypeHooks,
+    BalanceSummary,
+    CommitteeSummary,
 )
 
 
@@ -88,9 +88,7 @@ class BeaconEndpoints:
         data = from_dict(
             data_class=FinalityCheckpoints,
             data=value["data"],
-            config=Config(
-                cast=[Epoch, Root], type_hooks=TypeHooks
-            ),
+            config=Config(cast=[Epoch, Root], type_hooks=TypeHooks),
         )
         return data
 
@@ -174,12 +172,9 @@ class BeaconEndpoints:
             from_dict(
                 data_class=ValidatorSummary,
                 data=validator,
-                config=Config(
-                    cast=[ValidatorStatus],
-                    type_hooks=TypeHooks
-                ),
+                config=Config(cast=[ValidatorStatus], type_hooks=TypeHooks),
             )
-            for validator in value["data"][0:1]
+            for validator in value["data"]
         ]
         return data
 
@@ -192,11 +187,15 @@ class BeaconEndpoints:
             state_id: Element of [head, genesis, finalized, justified] or block number (int) or string starting with 0x
             validator_id: Validator identified by public key or validator index
         """
-        self._check_state_id(state_id)
-        self._check_validator_id(validator_id)
-        return self._query_url(
+        value = self._query_url(
             f"/eth/v1/beacon/states/{state_id}/validators/{validator_id}"
         )
+        data = from_dict(
+            data_class=ValidatorSummary,
+            data=value["data"],
+            config=Config(cast=[ValidatorStatus], type_hooks=TypeHooks),
+        )
+        return data
 
     def get_validators_balances_from_state(
         self, state_id: StateId, validator_list: Union[List[ValidatorId], None] = None
@@ -214,9 +213,18 @@ class BeaconEndpoints:
             validator_list: List of validators identified by public key or validator index
         """
         params = {"id": validator_list}
-        return self._query_url(
+        value = self._query_url(
             f"/eth/v1/beacon/states/{state_id}/validator_balances", params=params
         )
+        data = [
+            from_dict(
+                data_class=BalanceSummary,
+                data=balance,
+                config=Config(type_hooks=TypeHooks),
+            )
+            for balance in value["data"]
+        ]
+        return data
 
     def get_committees_from_state(
         self,
@@ -234,9 +242,18 @@ class BeaconEndpoints:
             slot: Restrict returned values to those matching the supplied slot
         """
         params = {"epoch": epoch, "index": index, "slot": slot}
-        return self._query_url(
+        value = self._query_url(
             f"/eth/v1/beacon/states/{state_id}/committees", params=params
         )
+        data = [
+            from_dict(
+                data_class=CommitteeSummary,
+                data=committee,
+                config=Config(type_hooks=TypeHooks),
+            )
+            for committee in value["data"]
+        ]
+        return data
 
     def get_sync_committees_from_state(
         self, state_id: StateId, epoch: Union[Epoch, None] = None

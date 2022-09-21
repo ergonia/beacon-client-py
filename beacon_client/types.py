@@ -385,6 +385,8 @@ class PeerDescriptor:
 TypeHooks = {
     Gwei: lambda x: Gwei(int(x)),
     ValidatorIndex: lambda x: ValidatorIndex(int(x)),
+    CommitteeIndex: lambda x: CommitteeIndex(int(x)),
+    Slot: lambda x: Slot(int(x)),
     Epoch: lambda x: Epoch(int(x)),
     Validator: lambda x: from_dict(
         data_class=Validator,

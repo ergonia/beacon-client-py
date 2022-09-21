@@ -42,4 +42,4 @@ class BeaconChainAPI(
 
 if __name__ == "__main__":
     client = BeaconChainAPI("http://localhost:5052")
-    print(client.get_validators_from_state(state_id="head", active=True))
+    print(client.get_committees_from_state(state_id=4733490, index=4, slot=4733472))
