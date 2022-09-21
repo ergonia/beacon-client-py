@@ -5,6 +5,8 @@ API Reference: https://ethereum.github.io/beacon-APIs/
 
 Reference Spec: https://github.com/ethereum/consensus-specs/blob/dev/specs/phase0/beacon-chain.md
 
+Annotated Reference: https://eth2book.info/altair/part3
+
 ## Simple Example
 
 ```
