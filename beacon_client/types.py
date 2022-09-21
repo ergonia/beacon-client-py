@@ -61,6 +61,68 @@ StateId = Union[Slot, Root, Head, Genesis, Justified, Finalized]
 BlockId = Union[Slot, Root, Head, Genesis, Finalized]
 PeerId = NewType("PeerId", str)
 
+PendingInitialized = "pending_initialized"
+PendingQueued = "pending_queued"
+ActiveOngoing = "active_ongoing"
+ActiveExiting = "active_exiting"
+ActiveSlashed = "active_slashed"
+ExitedUnslashed = "exited_unslashed"
+ExitedSlashed = "exited_slashed"
+WithdrawalPossible = "withdrawal_possible"
+WithdrawalDone = "withdrawal_done"
+Active = "active"
+Pending = "pending"
+Exited = "exited"
+Withdrawal = "withdrawal"
+ValidatorStatus = Union[
+    PendingInitialized,
+    PendingQueued,
+    ActiveOngoing,
+    ActiveExiting,
+    ActiveSlashed,
+    ExitedUnslashed,
+    ExitedSlashed,
+    WithdrawalPossible,
+    WithdrawalDone,
+    Active,
+    Pending,
+    Exited,
+    Withdrawal,
+]
+
+Disconnected = "disconnected"
+Connecting = "connecting"
+Connected = "connected"
+Disconnecting = "disconnecting"
+PeerState = Union[Disconnected, Connecting, Connected, Disconnecting]
+
+Head = "head"
+Block = "block"
+Attestation = "attestation"
+VoluntaryExit = "voluntary_exit"
+FinalizedCheckpoint = "finalized_checkpoint"
+ChainReorg = "chain_reorg"
+ContributionAndProof = "contribution_and_proof"
+EventTopic = Union[
+    Head,
+    Block,
+    Attestation,
+    VoluntaryExit,
+    FinalizedCheckpoint,
+    ChainReorg,
+    ContributionAndProof,
+]
+
+Inbound = "inbound"
+Outbound = "outbound"
+ConnectionOrientation = Union[Inbound, Outbound]
+
+Ready = "ready"
+Syncing = "syncing"
+NotInitialized = "not_initizlized"
+Unknown = "unknown"
+HealthStatus = Union[Ready, Syncing, NotInitialized, Unknown]
+
 CommitteeIndex = NewType("CommitteeIndex", int)
 ValidatorIndex = NewType("ValidatorIndex", int)
 Gwei = NewType("Gwei", int)
@@ -279,3 +341,64 @@ class BeaconState:
 class SignedBeaconBlock:
     message: BeaconBlock
     signature: BLSSignature
+
+
+@dataclass
+class GenesisDetails:
+    genesis_fork_version: Root
+    genesis_time: int
+    genesis_fork_version: Version
+
+
+@dataclass
+class GenesisDetails:
+    genesis_fork_version: Root
+    genesis_time: int
+    genesis_fork_version: Version
+
+
+@dataclass
+class FinalityCheckpoints:
+    previous_justified: Checkpoint
+    current_justified: Checkpoint
+    finalized: Checkpoint
+
+
+@dataclass
+class ValidatorSummary:
+    index: Validatorindex
+    balance: Gwei
+    status: ValidatorStatus
+    validator: Validator
+
+
+@dataclass
+class BalanceSummary:
+    index: ValidatorIndex
+    balance: Gwei
+
+
+@dataclass
+class CommitteeSummary:
+    index: CommitteeIndex
+    slot: Slot
+    validators: List[ValidatorIndex]
+
+
+@dataclass
+class SyncCommitteeSummary:
+    validators: List[ValidatorIndex]
+    validator_aggregates: List[List[ValidatorIndex]]
+
+
+@dataclass
+class BeaconHeaderSummary:
+    root: Root
+    canonical: bool
+    signed_header: SignedBeaconBlockHeader
+
+
+@dataclass
+class PeerDescriptor:
+    state: PeerState
+    direction: ConnectionOrientation
