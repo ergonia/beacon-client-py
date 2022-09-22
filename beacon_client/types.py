@@ -469,3 +469,29 @@ class SyncStatus:
     head_slot: Slot
     sync_distance: int
     is_syncing: bool
+
+
+@dataclass
+class StreamedHead:
+    slot: Slot
+    block: Root
+    state: Root
+    current_duty_dependent_root: Root
+    previous_duty_dependent_root: Root
+    epoch_transition: bool
+    execution_optimistic: bool
+
+
+@dataclass
+class StreamedBlock:
+    slot: Slot
+    block: Root
+    execution_optimistic: bool
+
+
+@dataclass
+class StreamedCheckpoint:
+    block: Root
+    state: Root
+    epoch: Epoch
+    execution_optimistic: bool

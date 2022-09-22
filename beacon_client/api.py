@@ -41,6 +41,9 @@ class BeaconChainAPI(
 
 
 if __name__ == "__main__":
+    from devtools import debug
+    import json
+
     client = BeaconChainAPI("http://localhost:5052")
-    print(client.get_node_health())
-    # print(client.get_sync_committees_from_state(state_id=4733490, index=4, slot=4733472))
+    for event in client.stream_events(attestation=True):
+        debug(client.parse_attestation(event.data))

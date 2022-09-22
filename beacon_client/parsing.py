@@ -13,7 +13,7 @@ from .types import (
     ValidatorStatus,
     PeerState,
     ConnectionOrientation,
-    ChainId
+    ChainId,
 )
 from dacite import from_dict, Config
 from bitstring import BitArray
