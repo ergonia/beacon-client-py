@@ -42,4 +42,9 @@ class BeaconChainAPI(
 
 if __name__ == "__main__":
     client = BeaconChainAPI("http://localhost:5052")
-    print(client.get_committees_from_state(state_id=4733490, index=4, slot=4733472))
+    print(
+        client.get_sync_committees_from_state(
+            state_id="0xc719e01b197a5a2f8f1796e11122009b845d95a19538baaa49362c04f4c74480"
+        )
+    )
+    # print(client.get_sync_committees_from_state(state_id=4733490, index=4, slot=4733472))

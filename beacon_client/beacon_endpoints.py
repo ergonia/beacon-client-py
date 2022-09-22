@@ -20,6 +20,8 @@ from .types import (
     TypeHooks,
     BalanceSummary,
     CommitteeSummary,
+    SyncCommitteeSummary,
+    BeaconHeaderSummary,
 )
 
 
@@ -267,9 +269,15 @@ class BeaconEndpoints:
         params = {
             "epoch": epoch,
         }
-        return self._query_url(
+        value = self._query_url(
             f"/eth/v1/beacon/states/{state_id}/sync_committees", params=params
         )
+        data = from_dict(
+            data_class=SyncCommitteeSummary,
+            data=value["data"],
+            config=Config(type_hooks=TypeHooks),
+        )
+        return data
 
     def get_headers(
         self, slot: Union[Slot, None] = None, parent_root: Union[Root, None] = None
@@ -281,7 +289,13 @@ class BeaconEndpoints:
             parent_root: Restrict returned values to those matching the supplied parent_root
         """
         params = {"slot": slot, "parent_root": parent_root}
-        return self._query_url("/eth/v1/beacon/headers", params=params)
+        value = self._query_url("/eth/v1/beacon/headers", params=params)
+        data = rom_dict(
+            data_class=BeaconHeaderSummary,
+            data=value["data"],
+            config=Config(type_hooks=TypeHooks),
+        )
+        return data
 
     def get_headers_from_block_id(self, block_id: BlockId) -> dict:
         """
@@ -289,7 +303,13 @@ class BeaconEndpoints:
         Args:
             block_id: Return block header matching given block id
         """
-        return self._query_url(f"/eth/v1/beacon/headers/{block_id}")
+        value = self._query_url(f"/eth/v1/beacon/headers/{block_id}")
+        data = rom_dict(
+            data_class=BeaconHeaderSummary,
+            data=value["data"],
+            config=Config(type_hooks=TypeHooks),
+        )
+        return data
 
     def get_block_from_block_id(
         self, block_id: BlockId, response_type: str = "json"
@@ -307,7 +327,7 @@ class BeaconEndpoints:
             headers = {"Accept": "application/json"}
         if response_type == "ssz":
             headers = {"Accept": "application/octet-stream"}
-        return self._query_url(f"/eth/v2/beacon/blocks/{block_id}", headers=headers)
+        value = self._query_url(f"/eth/v2/beacon/blocks/{block_id}", headers=headers)
 
     def get_block_root_from_block_id(self, block_id: BlockId) -> dict:
         """
@@ -315,7 +335,7 @@ class BeaconEndpoints:
         Args:
             block_id: Return block root matching given block id
         """
-        return self._query_url(f"/eth/v1/beacon/blocks/{block_id}/root")
+        value = self._query_url(f"/eth/v1/beacon/blocks/{block_id}/root")
 
     def get_attestations_from_block_id(self, block_id: BlockId) -> dict:
         """
@@ -323,7 +343,7 @@ class BeaconEndpoints:
         Args:
             block_id: Return attestations matching given block id
         """
-        return self._query_url(f"/eth/v1/beacon/blocks/{block_id}/attestations")
+        value = self._query_url(f"/eth/v1/beacon/blocks/{block_id}/attestations")
 
     def get_pool_attestations(
         self,
@@ -337,22 +357,22 @@ class BeaconEndpoints:
             committee_index: Restrict returned values to those matching the supplied committee index
         """
         params = {"slot": slot, "committee_index": committee_index}
-        return self._query_url("/eth/v1/beacon/pool/attestations", params=params)
+        value = self._query_url("/eth/v1/beacon/pool/attestations", params=params)
 
     def get_pool_attester_slashings(self) -> dict:
         """
         Retrieves attester slashings known by the node but not necessarily incorporated into any block
         """
-        return self._query_url("/eth/v1/beacon/pool/attester_slashings")
+        value = self._query_url("/eth/v1/beacon/pool/attester_slashings")
 
     def get_pool_proposer_slashings(self) -> dict:
         """
         Retrieves proposer slashings known by the node but not necessarily incorporated into any block
         """
-        return self._query_url("/eth/v1/beacon/pool/proposer_slashings")
+        value = self._query_url("/eth/v1/beacon/pool/proposer_slashings")
 
     def get_pool_voluntary_exits(self) -> dict:
         """
         Retrieves voluntary exits known by the node but not necessarily incorporated into any block
         """
-        return self._query_url("/eth/v1/beacon/pool/voluntary_exits")
+        value = self._query_url("/eth/v1/beacon/pool/voluntary_exits")

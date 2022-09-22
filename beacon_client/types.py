@@ -14,6 +14,10 @@ SHUFFLE_ROUND_COUNT = 90
 HYSTERESIS_QUOTIENT = 4
 HYSTERESIS_DOWNWARD_MULTIPLIER = 1
 HYSTERESIS_UPWARD_MULTIPLIER = 5
+INACTIVITY_SCORE_BIAS = 4
+INACTIVITY_SCORE_RECOVERY_RATE = 16
+EPOCHS_PER_SYNC_COMMITTEE_PERIOD = 2**8
+SYNC_COMMITTEE_SIZE = 2**9
 
 # Gwei Parameters
 MIN_DEPOSIT_AMOUNT = 10**9
@@ -42,6 +46,9 @@ PROPOSER_REWARD_QUOTIENT = 2**3
 INACTIVITY_PENALTY_QUOTIENT = 2**26
 MIN_SLASHING_PENALTY_QUOTIENT = 2**7
 PROPORTIONAL_SLASHING_MULTIPLIER = 1
+INACTIVITY_PENALTY_QUOTIENT_ALTAIR = 3 * 2**24
+MIN_SLASHING_PENALTY_QUOTIENT_ALTAIR = 2**6
+PROPORTIONAL_SLASHING_MULTIPLIER_ALTAIR = 2
 
 # Max operations per block
 MAX_PROPOSER_SLASHINGS = 16
@@ -49,6 +56,19 @@ MAX_ATTESTER_SLASHINGS = 2
 MAX_ATTESTATIONS = 128
 MAX_DEPOSITS = 16
 MAX_VOLUNTARY_EXITS = 16
+
+# Participation Flag Indices
+TIMELY_HEAD_FLAG_INDEX = 0
+TIMELY_SOURCE_FLAG_INDEX = 1
+TIMELY_TARGET_FLAG_INDEX = 2
+
+# Incentivization Weights
+TIMELY_HEAD_WEIGHT = 14
+TIMELY_SOURCE_WEIGHT = 14
+TIMELY_TARGET_WEIGHT = 26
+SYNC_REWARD_WEIGHT = 2
+PROPOSER_WEIGHT = 8
+WEIGHT_DENOMINATOR = 64
 
 # SIMPLE TYPES
 Slot = NewType("Slot", int)
@@ -61,6 +81,7 @@ Finalized = "finalized"
 StateId = Union[Slot, Root, Head, Genesis, Justified, Finalized]
 BlockId = Union[Slot, Root, Head, Genesis, Finalized]
 PeerId = NewType("PeerId", str)
+ParticipationFlags = NewType("ParticipationFlags", BitArray)
 
 
 CommitteeIndex = NewType("CommitteeIndex", int)
@@ -266,7 +287,18 @@ class SignedVoluntaryExit:
     signature: BLSSignature
 
 
-# i think this changed
+@dataclass
+class SyncCommittee:
+    pubkeys: List[BLSPubkey]
+    aggregate_pubkey: BLSPubkey
+
+
+@dataclass
+class SyncAggregate:
+    sync_committee_bits: BitArray
+    sync_committee_signature: BLSSignature
+
+
 @dataclass
 class BeaconBlockBody:
     randao_reveal: BLSSignature
@@ -278,6 +310,8 @@ class BeaconBlockBody:
     attestations: List[Attestation]
     deposits: List[Deposit]
     voluntary_exits: List[SignedVoluntaryExit]
+    # [New in Altair]
+    sync_aggregate: SyncAggregate
 
 
 @dataclass
@@ -292,19 +326,19 @@ class BeaconBlock:
 @dataclass
 class BeaconState:
     # Versioning
-    genesis_time: int
+    genesis_time: uint64
     genesis_validators_root: Root
     slot: Slot
     fork: Fork
     # History
     latest_block_header: BeaconBlockHeader
-    block_roots: List[Root]
-    state_roots: List[Root]
+    block_roots: Vector[Root]
+    state_roots: Vector[Root]
     historical_roots: List[Root]
     # Eth1
     eth1_data: Eth1Data
     eth1_data_votes: List[Eth1Data]
-    eth1_deposit_index: int
+    eth1_deposit_index: uint64
     # Registry
     validators: List[Validator]
     balances: List[Gwei]
@@ -312,14 +346,19 @@ class BeaconState:
     randao_mixes: List[Bytes32]
     # Slashings
     slashings: List[Gwei]  # Per-epoch sums of slashed effective balances
-    # Attestations
-    previous_epoch_attestations: List[PendingAttestation]
-    current_epoch_attestations: List[PendingAttestation]
+    # Participation
+    previous_epoch_participation: List[ParticipationFlags]  # [Modified in Altair]
+    current_epoch_participation: List[ParticipationFlags]  # [Modified in Altair]
     # Finality
     justification_bits: BitArray  # Bit set for every recent justified epoch
-    previous_justified_checkpoint: Checkpoint  # Previous epoch snapshot
+    previous_justified_checkpoint: Checkpoint
     current_justified_checkpoint: Checkpoint
     finalized_checkpoint: Checkpoint
+    # Inactivity
+    inactivity_scores: List[int]  # [New in Altair]
+    # Sync
+    current_sync_committee: SyncCommittee  # [New in Altair]
+    next_sync_committee: SyncCommittee  # [New in Altair]
 
 
 @dataclass
@@ -373,7 +412,7 @@ class SyncCommitteeSummary:
 class BeaconHeaderSummary:
     root: Root
     canonical: bool
-    signed_header: SignedBeaconBlockHeader
+    header: SignedBeaconBlockHeader
 
 
 @dataclass
@@ -393,6 +432,24 @@ TypeHooks = {
         data=x,
         config=Config(
             type_hooks={Epoch: lambda x: Epoch(int(x)), Gwei: lambda x: Gwei(int(x))}
+        ),
+    ),
+    SignedBeaconBlockHeader: lambda x: from_dict(
+        data_class=SignedBeaconBlockHeader,
+        data=x,
+        config=Config(
+            type_hooks={
+                BeaconBlockHeader: lambda x: from_dict(
+                    data_class=BeaconBlockHeader,
+                    data=x,
+                    config=Config(
+                        type_hooks={
+                            Slot: lambda x: Slot(int(x)),
+                            ValidatorIndex: lambda x: ValidatorIndex(int(x)),
+                        }
+                    ),
+                ),
+            }
         ),
     ),
 }
