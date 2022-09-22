@@ -24,6 +24,7 @@ from .types import (
     SignedBeaconBlock,
     Attestation,
     ProposerSlashing,
+    Fork
 )
 
 
@@ -47,15 +48,15 @@ class BeaconEndpoints:
         data = Root(value["data"]["root"])
         return data
 
-    def get_fork_from_state(self, state_id: StateId) -> dict:
+    def get_fork_from_state(self, state_id: StateId) -> Fork:
         """
         Returns Fork object for state with given 'state_id'.
         Args:
             state_id: Element of [head, genesis, finalized, justified] or block number (int) or string starting with 0x
         """
         value = self._query_url(f"/eth/v1/beacon/states/{state_id}/fork")
-        # data = from_dict(data_class=)
-        return value
+        data = parse_json(value["data"], Fork)
+        return data
 
     def get_finality_checkpoints_from_state(
         self, state_id: StateId
@@ -115,7 +116,6 @@ class BeaconEndpoints:
             exited: If true return validators with this status
             withdrawal: If true return validators with this status
         """
-        self._check_state_id(state_id)
         status = []
         if pending_initialized:
             status.append("pending_initialized")

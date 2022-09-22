@@ -480,7 +480,7 @@ class TestBeaconEndpoints:
         actual = self.client.get_sync_committees_from_state(
             state_id="0xc719e01b197a5a2f8f1796e11122009b845d95a19538baaa49362c04f4c74480"
         )
-        assert actual["data"]["validator_aggregates"][0] == expected
+        assert actual.validator_aggregates[0] == expected
 
     def test_get_headers(self):
         expected = BeaconHeaderSummary(

@@ -38,12 +38,3 @@ class BeaconChainAPI(
             return response.text
         else:
             return response
-
-
-if __name__ == "__main__":
-    from devtools import debug
-    import json
-
-    client = BeaconChainAPI("http://localhost:5052")
-    for event in client.stream_events(attestation=True):
-        debug(client.parse_attestation(event.data))
