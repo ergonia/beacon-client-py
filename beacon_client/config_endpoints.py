@@ -1,6 +1,6 @@
 from typing import List
-from .types import Fork, DepositContract
-from .parsing import parse_json
+from .utils.types import Fork, DepositContract
+from .utils.parsing import parse_json
 
 
 class ConfigEndpoints:

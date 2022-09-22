@@ -1,5 +1,5 @@
 from beacon_client.api import BeaconChainAPI
-from beacon_client.types import (
+from beacon_client.utils.types import (
     GenesisDetails,
     FinalityCheckpoints,
     Checkpoint,

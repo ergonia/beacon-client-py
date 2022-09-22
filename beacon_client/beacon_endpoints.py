@@ -1,6 +1,6 @@
 from typing import Union, List
-from .parsing import parse_json
-from .types import (
+from .utils.parsing import parse_json
+from .utils.types import (
     StateId,
     ValidatorId,
     ValidatorIndex,

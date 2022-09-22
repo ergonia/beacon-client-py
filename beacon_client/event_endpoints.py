@@ -1,6 +1,6 @@
 from sseclient import SSEClient
-from .parsing import parse_json
-from .types import StreamedHead, StreamedBlock, Attestation, StreamedCheckpoint
+from .utils.parsing import parse_json
+from .utils.types import StreamedHead, StreamedBlock, Attestation, StreamedCheckpoint
 import json
 
 
