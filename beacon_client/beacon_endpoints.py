@@ -212,7 +212,7 @@ class BeaconEndpoints:
 
     def get_sync_committees_from_state(
         self, state_id: StateId, epoch: Union[Epoch, None] = None
-    ) -> CommitteeSummary:
+    ) -> SyncCommitteeSummary:
         """
         Retrieves the sync committees for the given state.
         Args:
@@ -225,12 +225,7 @@ class BeaconEndpoints:
         value = self._query_url(
             f"/eth/v1/beacon/states/{state_id}/sync_committees", params=params
         )
-        data = from_dict(
-            data_class=SyncCommitteeSummary,
-            data=value["data"],
-            config=Config(type_hooks=TypeHooks),
-        )
-        data = parse_json(value["data"], CommitteeSummary)
+        data = parse_json(value["data"], SyncCommitteeSummary)
         return data
 
     def get_headers(
