@@ -22,6 +22,9 @@ from .types import (
     CommitteeSummary,
     SyncCommitteeSummary,
     BeaconHeaderSummary,
+    SignedBeaconBlock,
+    Attestation,
+    ProposerSlashing,
 )
 
 
@@ -304,7 +307,7 @@ class BeaconEndpoints:
             block_id: Return block header matching given block id
         """
         value = self._query_url(f"/eth/v1/beacon/headers/{block_id}")
-        data = rom_dict(
+        data = from_dict(
             data_class=BeaconHeaderSummary,
             data=value["data"],
             config=Config(type_hooks=TypeHooks),
@@ -322,34 +325,57 @@ class BeaconEndpoints:
             block_id: Return block matching given block id
             response_type: Element of [json, szz] that determines the return type
         """
-        assert response_type in ["json", "ssz"], "response_type must be in [json, ssz]"
-        if response_type == "json":
-            headers = {"Accept": "application/json"}
-        if response_type == "ssz":
-            headers = {"Accept": "application/octet-stream"}
-        value = self._query_url(f"/eth/v2/beacon/blocks/{block_id}", headers=headers)
+        match response_type:
+            case "json":
+                headers = {"Accept": "application/json"}
+                value = self._query_url(
+                    f"/eth/v2/beacon/blocks/{block_id}", headers=headers
+                )
+                data = from_dict(
+                    data_class=SignedBeaconBlock,
+                    data=value["data"],
+                    config=Config(type_hooks=TypeHooks),
+                )
+                return data
+            case "ssz":
+                headers = {"Accept": "application/octet-stream"}
+                return self._query_url(
+                    f"/eth/v2/beacon/blocks/{block_id}", headers=headers
+                )
+            case other:
+                assert Exception("response_type must be in [json, ssz]")
 
-    def get_block_root_from_block_id(self, block_id: BlockId) -> dict:
+    def get_block_root_from_block_id(self, block_id: BlockId) -> Root:
         """
         Retrieves hashTreeRoot of BeaconBlock/BeaconBlockHeader
         Args:
             block_id: Return block root matching given block id
         """
         value = self._query_url(f"/eth/v1/beacon/blocks/{block_id}/root")
+        return Root(value["data"]["root"])
 
-    def get_attestations_from_block_id(self, block_id: BlockId) -> dict:
+    def get_attestations_from_block_id(self, block_id: BlockId) -> List[Attestation]:
         """
         Retrieves attestation included in requested block.
         Args:
             block_id: Return attestations matching given block id
         """
         value = self._query_url(f"/eth/v1/beacon/blocks/{block_id}/attestations")
+        data = [
+            from_dict(
+                data_class=Attestation,
+                data=attestation,
+                config=Config(type_hooks=TypeHooks),
+            )
+            for attestation in value["data"]
+        ]
+        return data
 
     def get_pool_attestations(
         self,
         slot: Union[Slot, None] = None,
         committee_index: Union[CommitteeIndex, None] = None,
-    ) -> dict:
+    ) -> List[Attestation]:
         """
         Retrieves attestations known by the node but not necessarily incorporated into any block
         Args:
@@ -358,21 +384,39 @@ class BeaconEndpoints:
         """
         params = {"slot": slot, "committee_index": committee_index}
         value = self._query_url("/eth/v1/beacon/pool/attestations", params=params)
+        data = [
+            from_dict(
+                data_class=Attestation,
+                data=attestation,
+                config=Config(type_hooks=TypeHooks),
+            )
+            for attestation in value["data"]
+        ]
+        return data
 
-    def get_pool_attester_slashings(self) -> dict:
+    def get_pool_attester_slashings(self) -> list:
         """
         Retrieves attester slashings known by the node but not necessarily incorporated into any block
         """
         value = self._query_url("/eth/v1/beacon/pool/attester_slashings")
+        return value[
+            "data"
+        ]  # unparsed because it is very hard to test since slashing is rare
 
-    def get_pool_proposer_slashings(self) -> dict:
+    def get_pool_proposer_slashings(self) -> list:
         """
         Retrieves proposer slashings known by the node but not necessarily incorporated into any block
         """
         value = self._query_url("/eth/v1/beacon/pool/proposer_slashings")
+        return value[
+            "data"
+        ]  # unparsed because it is very hard to test since slashing is rare
 
     def get_pool_voluntary_exits(self) -> dict:
         """
         Retrieves voluntary exits known by the node but not necessarily incorporated into any block
         """
         value = self._query_url("/eth/v1/beacon/pool/voluntary_exits")
+        return value[
+            "data"
+        ]  # unparsed because it is very hard to test since exits are rare

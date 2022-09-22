@@ -157,6 +157,12 @@ class ForkData:
 
 
 @dataclass
+class DepositContract:
+    chain_id: int
+    address: str
+
+
+@dataclass
 class Checkpoint:
     epoch: Epoch
     root: Root
@@ -326,19 +332,19 @@ class BeaconBlock:
 @dataclass
 class BeaconState:
     # Versioning
-    genesis_time: uint64
+    genesis_time: int
     genesis_validators_root: Root
     slot: Slot
     fork: Fork
     # History
     latest_block_header: BeaconBlockHeader
-    block_roots: Vector[Root]
-    state_roots: Vector[Root]
+    block_roots: List[Root]
+    state_roots: List[Root]
     historical_roots: List[Root]
     # Eth1
     eth1_data: Eth1Data
     eth1_data_votes: List[Eth1Data]
-    eth1_deposit_index: uint64
+    eth1_deposit_index: int
     # Registry
     validators: List[Validator]
     balances: List[Gwei]
@@ -421,35 +427,39 @@ class PeerDescriptor:
     direction: ConnectionOrientation
 
 
-TypeHooks = {
+SimpleTypeHooks = {
     Gwei: lambda x: Gwei(int(x)),
     ValidatorIndex: lambda x: ValidatorIndex(int(x)),
     CommitteeIndex: lambda x: CommitteeIndex(int(x)),
     Slot: lambda x: Slot(int(x)),
     Epoch: lambda x: Epoch(int(x)),
-    Validator: lambda x: from_dict(
-        data_class=Validator,
+    int: lambda x: int(x),
+    BitArray: lambda x: BitArray(x),
+}
+
+
+def nested_hook(beacon_class, sub_classes: dict = {}, SimpleTypeHooks=SimpleTypeHooks):
+    return lambda x: from_dict(
+        data_class=beacon_class,
         data=x,
-        config=Config(
-            type_hooks={Epoch: lambda x: Epoch(int(x)), Gwei: lambda x: Gwei(int(x))}
-        ),
+        config=Config(type_hooks={**SimpleTypeHooks, **sub_classes}),
+    )
+
+
+NestedTypeHooks = {
+    Validator: nested_hook(Validator),
+    SignedBeaconBlockHeader: nested_hook(
+        SignedBeaconBlockHeader, {BeaconBlockHeader: nested_hook(BeaconBlockHeader)}
     ),
-    SignedBeaconBlockHeader: lambda x: from_dict(
-        data_class=SignedBeaconBlockHeader,
-        data=x,
-        config=Config(
-            type_hooks={
-                BeaconBlockHeader: lambda x: from_dict(
-                    data_class=BeaconBlockHeader,
-                    data=x,
-                    config=Config(
-                        type_hooks={
-                            Slot: lambda x: Slot(int(x)),
-                            ValidatorIndex: lambda x: ValidatorIndex(int(x)),
-                        }
-                    ),
-                ),
-            }
-        ),
+    BeaconBlock: nested_hook(
+        BeaconBlock,
+        {
+            BeaconBlockBody: nested_hook(
+                BeaconBlockBody, {Eth1Data: nested_hook(Eth1Data)}
+            )
+        },
     ),
 }
+
+
+TypeHooks = {**SimpleTypeHooks, **NestedTypeHooks}
