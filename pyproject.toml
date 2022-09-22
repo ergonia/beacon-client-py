@@ -13,6 +13,7 @@ sseclient-py = "^1.7.2"
 mkdocstrings = {extras = ["python"], version = "^0.19.0"}
 bitstring = "^3.1.9"
 dacite = "^1.6.0"
+multiaddr = "^0.0.9"
 
 
 [tool.poetry.group.dev.dependencies]

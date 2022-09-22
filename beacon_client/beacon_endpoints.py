@@ -1,5 +1,5 @@
 from typing import Union, List
-from dacite import from_dict, Config
+from .parsing import parse_json
 from .types import (
     StateId,
     ValidatorId,
@@ -17,7 +17,6 @@ from .types import (
     Gwei,
     Validator,
     ValidatorStatus,
-    TypeHooks,
     BalanceSummary,
     CommitteeSummary,
     SyncCommitteeSummary,
@@ -29,33 +28,12 @@ from .types import (
 
 
 class BeaconEndpoints:
-    @staticmethod
-    def _check_state_id(state_id: StateId) -> None:
-        if isinstance(state_id, str) and not state_id.startswith("0x"):
-            assert state_id in [
-                "head",
-                "genesis",
-                "finalized",
-                "justified",
-            ], "state_id must be in [head, genesis, finalized, justified] or block number (int) or start with 0x"
-
-    @staticmethod
-    def _check_validator_id(validator_id: ValidatorId) -> None:
-        if isinstance(validator_id, str):
-            assert validator_id.startswith(
-                "0x"
-            ), "validator_id must be an index (int) or start with 0x"
-
     def get_genesis(self) -> GenesisDetails:
         """
         Retrieve details of the chain's genesis which can be used to identify chain.
         """
         value = self._query_url("/eth/v1/beacon/genesis")
-        data = from_dict(
-            data_class=GenesisDetails,
-            data=value["data"],
-            config=Config(cast=[Version, int, Root]),
-        )
+        data = parse_json(value["data"], GenesisDetails)
         return data
 
     def get_state_root(self, state_id: StateId) -> Root:
@@ -79,7 +57,9 @@ class BeaconEndpoints:
         # data = from_dict(data_class=)
         return value
 
-    def get_finality_checkpoints_from_state(self, state_id: StateId) -> dict:
+    def get_finality_checkpoints_from_state(
+        self, state_id: StateId
+    ) -> FinalityCheckpoints:
         """
         Returns finality checkpoints for state with given 'state_id'.
         In case finality is not yet achieved, checkpoint should return epoch 0 and ZERO_HASH as root.
@@ -89,12 +69,7 @@ class BeaconEndpoints:
         value = self._query_url(
             f"/eth/v1/beacon/states/{state_id}/finality_checkpoints"
         )
-        print(value["data"])
-        data = from_dict(
-            data_class=FinalityCheckpoints,
-            data=value["data"],
-            config=Config(cast=[Epoch, Root], type_hooks=TypeHooks),
-        )
+        data = parse_json(value["data"], FinalityCheckpoints)
         return data
 
     def get_validators_from_state(
@@ -114,7 +89,7 @@ class BeaconEndpoints:
         pending: bool = False,
         exited: bool = False,
         withdrawal: bool = False,
-    ) -> dict:
+    ) -> List[ValidatorSummary]:
         """
         Returns filterable list of validators with their balance, status and index.
         Information will be returned for all indices or public key that match known validators.
@@ -173,19 +148,12 @@ class BeaconEndpoints:
         value = self._query_url(
             f"/eth/v1/beacon/states/{state_id}/validators", params=params
         )
-        data = [
-            from_dict(
-                data_class=ValidatorSummary,
-                data=validator,
-                config=Config(cast=[ValidatorStatus], type_hooks=TypeHooks),
-            )
-            for validator in value["data"]
-        ]
+        data = parse_json(value["data"], ValidatorSummary)
         return data
 
     def get_validators_from_state_by_id(
         self, state_id: StateId, validator_id: ValidatorId
-    ) -> dict:
+    ) -> ValidatorSummary:
         """
         Returns validator specified by state and id or public key along with status and balance.
         Args:
@@ -195,16 +163,12 @@ class BeaconEndpoints:
         value = self._query_url(
             f"/eth/v1/beacon/states/{state_id}/validators/{validator_id}"
         )
-        data = from_dict(
-            data_class=ValidatorSummary,
-            data=value["data"],
-            config=Config(cast=[ValidatorStatus], type_hooks=TypeHooks),
-        )
+        data = parse_json(value["data"], ValidatorSummary)
         return data
 
     def get_validators_balances_from_state(
         self, state_id: StateId, validator_list: Union[List[ValidatorId], None] = None
-    ) -> dict:
+    ) -> List[BalanceSummary]:
         """
         Returns filterable list of validators balances.
         Balances will be returned for all indices or public key that match known validators.
@@ -221,14 +185,7 @@ class BeaconEndpoints:
         value = self._query_url(
             f"/eth/v1/beacon/states/{state_id}/validator_balances", params=params
         )
-        data = [
-            from_dict(
-                data_class=BalanceSummary,
-                data=balance,
-                config=Config(type_hooks=TypeHooks),
-            )
-            for balance in value["data"]
-        ]
+        data = parse_json(value["data"], BalanceSummary)
         return data
 
     def get_committees_from_state(
@@ -237,7 +194,7 @@ class BeaconEndpoints:
         epoch: Union[Epoch, None] = None,
         index: Union[ValidatorIndex, None] = None,
         slot: Union[Slot, None] = None,
-    ) -> dict:
+    ) -> List[CommitteeSummary]:
         """
         Retrieves the committees for the given state.
         Args:
@@ -250,19 +207,12 @@ class BeaconEndpoints:
         value = self._query_url(
             f"/eth/v1/beacon/states/{state_id}/committees", params=params
         )
-        data = [
-            from_dict(
-                data_class=CommitteeSummary,
-                data=committee,
-                config=Config(type_hooks=TypeHooks),
-            )
-            for committee in value["data"]
-        ]
+        data = parse_json(value["data"], CommitteeSummary)
         return data
 
     def get_sync_committees_from_state(
         self, state_id: StateId, epoch: Union[Epoch, None] = None
-    ) -> dict:
+    ) -> CommitteeSummary:
         """
         Retrieves the sync committees for the given state.
         Args:
@@ -280,11 +230,12 @@ class BeaconEndpoints:
             data=value["data"],
             config=Config(type_hooks=TypeHooks),
         )
+        data = parse_json(value["data"], CommitteeSummary)
         return data
 
     def get_headers(
         self, slot: Union[Slot, None] = None, parent_root: Union[Root, None] = None
-    ) -> dict:
+    ) -> BeaconHeaderSummary:
         """
         Retrieves block headers matching given query. By default it will fetch current head slot blocks.
         Args:
@@ -293,30 +244,22 @@ class BeaconEndpoints:
         """
         params = {"slot": slot, "parent_root": parent_root}
         value = self._query_url("/eth/v1/beacon/headers", params=params)
-        data = rom_dict(
-            data_class=BeaconHeaderSummary,
-            data=value["data"],
-            config=Config(type_hooks=TypeHooks),
-        )
+        data = parse_json(value["data"], BeaconHeaderSummary)
         return data
 
-    def get_headers_from_block_id(self, block_id: BlockId) -> dict:
+    def get_headers_from_block_id(self, block_id: BlockId) -> BeaconHeaderSummary:
         """
         Retrieves block headers matching given query. By default it will fetch current head slot blocks.
         Args:
             block_id: Return block header matching given block id
         """
         value = self._query_url(f"/eth/v1/beacon/headers/{block_id}")
-        data = from_dict(
-            data_class=BeaconHeaderSummary,
-            data=value["data"],
-            config=Config(type_hooks=TypeHooks),
-        )
+        data = parse_json(value["data"], BeaconHeaderSummary)
         return data
 
     def get_block_from_block_id(
         self, block_id: BlockId, response_type: str = "json"
-    ) -> Union[dict, str]:
+    ) -> Union[SignedBeaconBlock, str]:
         """
         Retrieves block details for given block id.
         Depending on Accept header it can be returned either as json or as bytes serialized by SSZ
@@ -331,11 +274,7 @@ class BeaconEndpoints:
                 value = self._query_url(
                     f"/eth/v2/beacon/blocks/{block_id}", headers=headers
                 )
-                data = from_dict(
-                    data_class=SignedBeaconBlock,
-                    data=value["data"],
-                    config=Config(type_hooks=TypeHooks),
-                )
+                data = parse_json(value["data"], SignedBeaconBlock)
                 return data
             case "ssz":
                 headers = {"Accept": "application/octet-stream"}
@@ -361,14 +300,7 @@ class BeaconEndpoints:
             block_id: Return attestations matching given block id
         """
         value = self._query_url(f"/eth/v1/beacon/blocks/{block_id}/attestations")
-        data = [
-            from_dict(
-                data_class=Attestation,
-                data=attestation,
-                config=Config(type_hooks=TypeHooks),
-            )
-            for attestation in value["data"]
-        ]
+        data = parse_json(value["data"], Attestation)
         return data
 
     def get_pool_attestations(
@@ -384,14 +316,7 @@ class BeaconEndpoints:
         """
         params = {"slot": slot, "committee_index": committee_index}
         value = self._query_url("/eth/v1/beacon/pool/attestations", params=params)
-        data = [
-            from_dict(
-                data_class=Attestation,
-                data=attestation,
-                config=Config(type_hooks=TypeHooks),
-            )
-            for attestation in value["data"]
-        ]
+        data = parse_json(value["data"], Attestation)
         return data
 
     def get_pool_attester_slashings(self) -> list:
@@ -399,24 +324,21 @@ class BeaconEndpoints:
         Retrieves attester slashings known by the node but not necessarily incorporated into any block
         """
         value = self._query_url("/eth/v1/beacon/pool/attester_slashings")
-        return value[
-            "data"
-        ]  # unparsed because it is very hard to test since slashing is rare
+        # unparsed because it is very hard to test since slashing is rare
+        return value["data"]
 
     def get_pool_proposer_slashings(self) -> list:
         """
         Retrieves proposer slashings known by the node but not necessarily incorporated into any block
         """
         value = self._query_url("/eth/v1/beacon/pool/proposer_slashings")
-        return value[
-            "data"
-        ]  # unparsed because it is very hard to test since slashing is rare
+        # unparsed because it is very hard to test since slashing is rare
+        return value["data"]
 
     def get_pool_voluntary_exits(self) -> dict:
         """
         Retrieves voluntary exits known by the node but not necessarily incorporated into any block
         """
         value = self._query_url("/eth/v1/beacon/pool/voluntary_exits")
-        return value[
-            "data"
-        ]  # unparsed because it is very hard to test since exits are rare
+        # unparsed because it is very hard to test since slashing is rare
+        return value["data"]

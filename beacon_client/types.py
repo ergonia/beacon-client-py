@@ -3,6 +3,8 @@ from enum import Enum
 from dataclasses import dataclass
 from bitstring import BitArray
 from dacite import from_dict, Config
+from multiaddr import Multiaddr
+
 
 # CONSTANTS
 
@@ -95,6 +97,8 @@ BLSPubkey = NewType("BLSPubkey", str)
 BLSSignature = NewType("BLSSignature", str)
 ValidatorId = Union[ValidatorIndex, BLSPubkey]
 Bytes32 = NewType("Bytes32", str)
+ChainId = NewType("ChainId", int)
+ExecutionAddress = NewType("ExecutionAddress", str)
 
 
 class ValidatorStatus(Enum):
@@ -158,8 +162,8 @@ class ForkData:
 
 @dataclass
 class DepositContract:
-    chain_id: int
-    address: str
+    chain_id: ChainId
+    address: ExecutionAddress
 
 
 @dataclass
@@ -427,39 +431,25 @@ class PeerDescriptor:
     direction: ConnectionOrientation
 
 
-SimpleTypeHooks = {
-    Gwei: lambda x: Gwei(int(x)),
-    ValidatorIndex: lambda x: ValidatorIndex(int(x)),
-    CommitteeIndex: lambda x: CommitteeIndex(int(x)),
-    Slot: lambda x: Slot(int(x)),
-    Epoch: lambda x: Epoch(int(x)),
-    int: lambda x: int(x),
-    BitArray: lambda x: BitArray(x),
-}
+@dataclass
+class MetaData:
+    seq_number: int
+    attnets: BitArray
 
 
-def nested_hook(beacon_class, sub_classes: dict = {}, SimpleTypeHooks=SimpleTypeHooks):
-    return lambda x: from_dict(
-        data_class=beacon_class,
-        data=x,
-        config=Config(type_hooks={**SimpleTypeHooks, **sub_classes}),
-    )
+@dataclass
+class NetworkIdentity:
+    peer_id: PeerId
+    enr: Enr
+    p2p_addresses: List[Multiaddr]
+    discovery_addresses: List[Multiaddr]
+    metadata: Metadata
 
 
-NestedTypeHooks = {
-    Validator: nested_hook(Validator),
-    SignedBeaconBlockHeader: nested_hook(
-        SignedBeaconBlockHeader, {BeaconBlockHeader: nested_hook(BeaconBlockHeader)}
-    ),
-    BeaconBlock: nested_hook(
-        BeaconBlock,
-        {
-            BeaconBlockBody: nested_hook(
-                BeaconBlockBody, {Eth1Data: nested_hook(Eth1Data)}
-            )
-        },
-    ),
-}
-
-
-TypeHooks = {**SimpleTypeHooks, **NestedTypeHooks}
+@dataclass
+class PeerDescriptor:
+    peer_id: PeerId
+    enr: Enr
+    last_seen_p2p_address: Multiaddr
+    state: PeerState
+    direction: ConnectionOrientation

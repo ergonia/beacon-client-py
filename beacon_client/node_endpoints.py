@@ -1,12 +1,19 @@
-from .types import PeerId
+from .types import PeerId, NetworkIdentity, TypeHooks
+from dacite import from_dict, Config
 
 
 class NodeEndpoints:
-    def get_node_identity(self):
+    def get_node_identity(self) -> NetworkIdentity:
         """
         Retrieves data about the node's network presence
         """
-        return self._query_url("/eth/v1/node/identity")
+        value = self._query_url("/eth/v1/node/identity")
+        data = from_dict(
+            data_class=DepositContract,
+            data=value["data"],
+            config=Config(type_hooks=TypeHooks),
+        )
+        return data
 
     def get_node_peers(
         self,

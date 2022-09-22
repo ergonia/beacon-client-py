@@ -1,6 +1,6 @@
 from typing import List
-from .types import Fork, TypeHooks, Root, DepositContract
-from dacite import from_dict, Config
+from .types import Fork, DepositContract
+from .parsing import parse_json
 
 
 class ConfigEndpoints:
@@ -9,14 +9,7 @@ class ConfigEndpoints:
         Retrieve all forks, past present and future, of which this node is aware.
         """
         value = self._query_url("/eth/v1/config/fork_schedule")
-        data = [
-            from_dict(
-                data_class=Fork,
-                data=fork,
-                config=Config(type_hooks=TypeHooks),
-            )
-            for fork in value["data"]
-        ]
+        data = parse_json(value["data"], Fork)
         return data
 
     def get_node_specification(self) -> dict:
@@ -26,14 +19,10 @@ class ConfigEndpoints:
         value = self._query_url("/eth/v1/config/spec")
         return value["data"]
 
-    def get_deposit_contract(self) -> dict:
+    def get_deposit_contract(self) -> DepositContract:
         """
         Retrieve Eth1 deposit contract address and chain ID.
         """
         value = self._query_url("/eth/v1/config/deposit_contract")
-        data = from_dict(
-            data_class=DepositContract,
-            data=value["data"],
-            config=Config(type_hooks=TypeHooks),
-        )
+        data = parse_json(value["data"], DepositContract)
         return data
