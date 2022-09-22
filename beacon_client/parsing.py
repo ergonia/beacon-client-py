@@ -9,9 +9,15 @@ from .types import (
     BeaconBlockHeader,
     BeaconBlock,
     BeaconBlockBody,
+    Eth1Data,
+    ValidatorStatus,
+    PeerState,
+    ConnectionOrientation,
+    ChainId
 )
 from dacite import from_dict, Config
-
+from bitstring import BitArray
+from multiaddr import Multiaddr
 
 SimpleTypeHooks = {
     Gwei: lambda x: Gwei(int(x)),
@@ -19,8 +25,13 @@ SimpleTypeHooks = {
     CommitteeIndex: lambda x: CommitteeIndex(int(x)),
     Slot: lambda x: Slot(int(x)),
     Epoch: lambda x: Epoch(int(x)),
-    int: lambda x: int(x),
-    BitArray: lambda x: BitArray(x),
+    ChainId: lambda x: ChainId(int(x)),
+    int: int,
+    BitArray: BitArray,
+    Multiaddr: Multiaddr,
+    ValidatorStatus: ValidatorStatus,
+    PeerState: PeerState,
+    ConnectionOrientation: ConnectionOrientation,
 }
 
 

@@ -1,5 +1,6 @@
-from .types import PeerId, NetworkIdentity, TypeHooks
-from dacite import from_dict, Config
+from .types import PeerId, NetworkIdentity, PeerDescription, PeerSummary, SyncStatus
+from typing import List
+from .parsing import parse_json
 
 
 class NodeEndpoints:
@@ -8,11 +9,7 @@ class NodeEndpoints:
         Retrieves data about the node's network presence
         """
         value = self._query_url("/eth/v1/node/identity")
-        data = from_dict(
-            data_class=DepositContract,
-            data=value["data"],
-            config=Config(type_hooks=TypeHooks),
-        )
+        data = parse_json(value["data"], NetworkIdentity)
         return data
 
     def get_node_peers(
@@ -23,7 +20,7 @@ class NodeEndpoints:
         connecting: bool = False,
         inbound: bool = False,
         outbound: bool = False,
-    ):
+    ) -> List[PeerDescription]:
         """
         Retrieves data about the node's network peers.
         By default this returns all peers.
@@ -57,36 +54,38 @@ class NodeEndpoints:
             len(direction) > 0
         ), "Must request at least one direction in [inbound, outbound]"
         params = {"state": state, "direction": direction}
-        return self._query_url("/eth/v1/node/peers", params=params)
+        value = self._query_url("/eth/v1/node/peers", params=params)
+        data = parse_json(value["data"], PeerDescription)
+        return data
 
-    def get_peer_by_id(self, peer_id: PeerId):
+    def get_peer_by_id(self, peer_id: PeerId) -> PeerDescription:
         """
         Retrieves data about the given peer
         Args:
             peer_id: Return peer for given peer id
         """
-        return self._query_url(f"/eth/v1/node/peers/{peer_id}")
+        value = self._query_url(f"/eth/v1/node/peers/{peer_id}")
+        data = parse_json(value["data"], PeerDescription)
+        return data
 
-    def get_peer_count(self):
+    def get_peer_count(self) -> PeerSummary:
         """
         Retrieves number of known peers.
         """
-        return self._query_url("/eth/v1/node/peer_count")
+        value = self._query_url("/eth/v1/node/peer_count")
+        data = parse_json(value["data"], PeerSummary)
+        return data
 
-    def get_node_version(self):
+    def get_node_version(self) -> str:
         """
         Requests that the beacon node identify information about its implementation in a format similar to a HTTP User-Agent field.
         """
-        return self._query_url("/eth/v1/node/version")
+        return self._query_url("/eth/v1/node/version")["data"]["version"]
 
-    def get_syncing_status(self):
+    def get_syncing_status(self) -> SyncStatus:
         """
         Requests the beacon node to describe if it's currently syncing or not, and if it is, what block it is up to.
         """
-        return self._query_url("/eth/v1/node/syncing")
-
-    def get_node_health(self):
-        """
-        Returns node health status in http status codes. Useful for load balancers.
-        """
-        return self._query_url("/eth/v1/node/health")
+        value = self._query_url("/eth/v1/node/syncing")
+        data = parse_json(value["data"], SyncStatus)
+        return data

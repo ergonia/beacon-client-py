@@ -42,5 +42,5 @@ class BeaconChainAPI(
 
 if __name__ == "__main__":
     client = BeaconChainAPI("http://localhost:5052")
-    print(client.get_node_peers(connected=True, outbound=True))
+    print(client.get_node_health())
     # print(client.get_sync_committees_from_state(state_id=4733490, index=4, slot=4733472))

@@ -99,6 +99,7 @@ ValidatorId = Union[ValidatorIndex, BLSPubkey]
 Bytes32 = NewType("Bytes32", str)
 ChainId = NewType("ChainId", int)
 ExecutionAddress = NewType("ExecutionAddress", str)
+Enr = NewType("Enr", str)
 
 
 class ValidatorStatus(Enum):
@@ -443,13 +444,28 @@ class NetworkIdentity:
     enr: Enr
     p2p_addresses: List[Multiaddr]
     discovery_addresses: List[Multiaddr]
-    metadata: Metadata
+    metadata: MetaData
 
 
 @dataclass
-class PeerDescriptor:
+class PeerDescription:
     peer_id: PeerId
     enr: Enr
     last_seen_p2p_address: Multiaddr
     state: PeerState
     direction: ConnectionOrientation
+
+
+@dataclass
+class PeerSummary:
+    disconnected: int
+    connecting: int
+    connected: int
+    disconnecting: int
+
+
+@dataclass
+class SyncStatus:
+    head_slot: Slot
+    sync_distance: int
+    is_syncing: bool

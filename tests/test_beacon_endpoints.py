@@ -10,7 +10,13 @@ from beacon_client.types import (
     BalanceSummary,
     CommitteeSummary,
     SyncCommitteeSummary,
+    BeaconHeaderSummary,
+    SignedBeaconBlockHeader,
+    BeaconBlockHeader,
+    Attestation,
+    AttestationData,
 )
+from bitstring import BitArray
 import pytest
 
 
@@ -477,46 +483,38 @@ class TestBeaconEndpoints:
         assert actual["data"]["validator_aggregates"][0] == expected
 
     def test_get_headers(self):
-        expected = {
-            "data": [
-                {
-                    "canonical": True,
-                    "header": {
-                        "message": {
-                            "body_root": "0x924a8bf65cc67827c25c76ddb7f376461e3c59033638e292668495bef17414c1",
-                            "parent_root": "0x8015f2fb159f85fd46686c09f6a588ec901f9cc11613f1cdeb24864414ca8f97",
-                            "proposer_index": "170574",
-                            "slot": "4733490",
-                            "state_root": "0xc719e01b197a5a2f8f1796e11122009b845d95a19538baaa49362c04f4c74480",
-                        },
-                        "signature": "0xaa5e271443b1a2027e5b7a1d587c59d43854aad3926fa9424a2723b493536ee46d62bd2ccc74ec5bbbe480af81bcf17d07893feea8c11708d3d838b3e8fae3e426fb525a09192ecc8f364240e127f7c5296bcfb1921dc06831c6fdcee0f2316b",
-                    },
-                    "root": "0xd4046c8c2de7263edfd239e42e9dd892c07bb99c7222107908aac26767c39c8e",
-                }
-            ],
-            "execution_optimistic": True,
-        }
+        expected = BeaconHeaderSummary(
+            root="0xd4046c8c2de7263edfd239e42e9dd892c07bb99c7222107908aac26767c39c8e",
+            canonical=True,
+            header=SignedBeaconBlockHeader(
+                message=BeaconBlockHeader(
+                    body_root="0x924a8bf65cc67827c25c76ddb7f376461e3c59033638e292668495bef17414c1",
+                    parent_root="0x8015f2fb159f85fd46686c09f6a588ec901f9cc11613f1cdeb24864414ca8f97",
+                    proposer_index=170574,
+                    slot=4733490,
+                    state_root="0xc719e01b197a5a2f8f1796e11122009b845d95a19538baaa49362c04f4c74480",
+                ),
+                signature="0xaa5e271443b1a2027e5b7a1d587c59d43854aad3926fa9424a2723b493536ee46d62bd2ccc74ec5bbbe480af81bcf17d07893feea8c11708d3d838b3e8fae3e426fb525a09192ecc8f364240e127f7c5296bcfb1921dc06831c6fdcee0f2316b",
+            ),
+        )
         actual = self.client.get_headers(slot=4733490)
-        assert actual == expected
+        assert actual[0] == expected
 
     def test_get_headers_from_block_id(self):
-        expected = {
-            "data": {
-                "canonical": True,
-                "header": {
-                    "message": {
-                        "body_root": "0x924a8bf65cc67827c25c76ddb7f376461e3c59033638e292668495bef17414c1",
-                        "parent_root": "0x8015f2fb159f85fd46686c09f6a588ec901f9cc11613f1cdeb24864414ca8f97",
-                        "proposer_index": "170574",
-                        "slot": "4733490",
-                        "state_root": "0xc719e01b197a5a2f8f1796e11122009b845d95a19538baaa49362c04f4c74480",
-                    },
-                    "signature": "0xaa5e271443b1a2027e5b7a1d587c59d43854aad3926fa9424a2723b493536ee46d62bd2ccc74ec5bbbe480af81bcf17d07893feea8c11708d3d838b3e8fae3e426fb525a09192ecc8f364240e127f7c5296bcfb1921dc06831c6fdcee0f2316b",
-                },
-                "root": "0xd4046c8c2de7263edfd239e42e9dd892c07bb99c7222107908aac26767c39c8e",
-            },
-            "execution_optimistic": True,
-        }
+        expected = BeaconHeaderSummary(
+            root="0xd4046c8c2de7263edfd239e42e9dd892c07bb99c7222107908aac26767c39c8e",
+            canonical=True,
+            header=SignedBeaconBlockHeader(
+                message=BeaconBlockHeader(
+                    body_root="0x924a8bf65cc67827c25c76ddb7f376461e3c59033638e292668495bef17414c1",
+                    parent_root="0x8015f2fb159f85fd46686c09f6a588ec901f9cc11613f1cdeb24864414ca8f97",
+                    proposer_index=170574,
+                    slot=4733490,
+                    state_root="0xc719e01b197a5a2f8f1796e11122009b845d95a19538baaa49362c04f4c74480",
+                ),
+                signature="0xaa5e271443b1a2027e5b7a1d587c59d43854aad3926fa9424a2723b493536ee46d62bd2ccc74ec5bbbe480af81bcf17d07893feea8c11708d3d838b3e8fae3e426fb525a09192ecc8f364240e127f7c5296bcfb1921dc06831c6fdcee0f2316b",
+            ),
+        )
         actual = self.client.get_headers_from_block_id(block_id=4733490)
         assert actual == expected
 
@@ -525,35 +523,34 @@ class TestBeaconEndpoints:
         pass
 
     def test_get_block_root_from_block_id(self):
-        expected = {
-            "data": {
-                "root": "0xd4046c8c2de7263edfd239e42e9dd892c07bb99c7222107908aac26767c39c8e"
-            },
-            "execution_optimistic": True,
-        }
+        expected = Root(
+            "0xd4046c8c2de7263edfd239e42e9dd892c07bb99c7222107908aac26767c39c8e"
+        )
         actual = self.client.get_block_root_from_block_id(block_id=4733490)
         assert actual == expected
 
     def test_get_attestations_from_block_id(self):
-        expected = {
-            "aggregation_bits": "0xffffffffffffffffffffffffffffffffffffffffffffffffffff0f",
-            "data": {
-                "beacon_block_root": "0x8015f2fb159f85fd46686c09f6a588ec901f9cc11613f1cdeb24864414ca8f97",
-                "index": "47",
-                "slot": "4733489",
-                "source": {
-                    "epoch": "147920",
-                    "root": "0xd7aef74c750474d7a9af76c210fb5c0adb361d59571266a08e91b09182339a98",
-                },
-                "target": {
-                    "epoch": "147921",
-                    "root": "0x0e69a750d555cf8bb5ac46b1524d808bcbdec49173f6d8dd963f161a59fa4eac",
-                },
-            },
-            "signature": "0x8e292242b012e0820ea28579efa776a336f1371345dbdfaad9df0b7158d0ae3492b8cec1a22779ad909f10d1cb2a4c570182ffad65c9fcf9ddc73105fc6b75af7984eb74660f10e5de01b4dbdeecd44b37d19a41fe10eec5a799d31f0daa2cb1",
-        }
+        expected = Attestation(
+            aggregation_bits=BitArray(
+                "0xffffffffffffffffffffffffffffffffffffffffffffffffffff0f"
+            ),
+            signature="0x8e292242b012e0820ea28579efa776a336f1371345dbdfaad9df0b7158d0ae3492b8cec1a22779ad909f10d1cb2a4c570182ffad65c9fcf9ddc73105fc6b75af7984eb74660f10e5de01b4dbdeecd44b37d19a41fe10eec5a799d31f0daa2cb1",
+            data=AttestationData(
+                beacon_block_root="0x8015f2fb159f85fd46686c09f6a588ec901f9cc11613f1cdeb24864414ca8f97",
+                index=47,
+                slot=4733489,
+                source=Checkpoint(
+                    epoch=147920,
+                    root="0xd7aef74c750474d7a9af76c210fb5c0adb361d59571266a08e91b09182339a98",
+                ),
+                target=Checkpoint(
+                    epoch=147921,
+                    root="0x0e69a750d555cf8bb5ac46b1524d808bcbdec49173f6d8dd963f161a59fa4eac",
+                ),
+            ),
+        )
         actual = self.client.get_attestations_from_block_id(block_id=4733490)
-        assert actual["data"][0] == expected
+        assert actual[0] == expected
 
     def test_get_pool_attestations(self):
         # specific to validator
