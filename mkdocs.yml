@@ -26,6 +26,10 @@ markdown_extensions:
   - pymdownx.tabbed:
       alternate_style: true
 
+repo_url: https://github.com/ergonia/beacon-client-py
+repo_name: ergonia/beacon-client-py
+site_url: https://ergonia.github.io/beacon-client-py/
+
 plugins:
   - mkdocstrings:
       handlers:
