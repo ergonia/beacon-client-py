@@ -9,6 +9,11 @@ A Python client for interacting with the Ethereum Beacon Chain API
 
 This implementation also leans on types implemented [here](https://github.com/ralexstokes/beacon-api-client)
 
+## Installation
+```
+pip install beacon-client-py
+```
+
 ## Simple Example
 
 ```
