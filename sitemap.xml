@@ -1,37 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-         <loc>None</loc>
+         <loc>https://ergonia.github.io/beacon-client-py/</loc>
          <lastmod>2022-09-23</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>None</loc>
+         <loc>https://ergonia.github.io/beacon-client-py/beacon_endpoints/</loc>
          <lastmod>2022-09-23</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>None</loc>
+         <loc>https://ergonia.github.io/beacon-client-py/config_endpoints/</loc>
          <lastmod>2022-09-23</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>None</loc>
+         <loc>https://ergonia.github.io/beacon-client-py/debug_endpoints/</loc>
          <lastmod>2022-09-23</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>None</loc>
+         <loc>https://ergonia.github.io/beacon-client-py/event_endpoints/</loc>
          <lastmod>2022-09-23</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>None</loc>
+         <loc>https://ergonia.github.io/beacon-client-py/node_endpoints/</loc>
          <lastmod>2022-09-23</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>None</loc>
+         <loc>https://ergonia.github.io/beacon-client-py/validator_endpoints/</loc>
          <lastmod>2022-09-23</lastmod>
          <changefreq>daily</changefreq>
     </url>
