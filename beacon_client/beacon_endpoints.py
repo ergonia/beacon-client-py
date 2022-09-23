@@ -1,66 +1,82 @@
-from typing import Union
+from typing import Union, List
+from .utils.parsing import parse_json
+from .utils.types import (
+    StateId,
+    ValidatorId,
+    ValidatorIndex,
+    CommitteeIndex,
+    BlockId,
+    Epoch,
+    Slot,
+    Root,
+    GenesisDetails,
+    Version,
+    Checkpoint,
+    FinalityCheckpoints,
+    ValidatorSummary,
+    Gwei,
+    Validator,
+    ValidatorStatus,
+    BalanceSummary,
+    CommitteeSummary,
+    SyncCommitteeSummary,
+    BeaconHeaderSummary,
+    SignedBeaconBlock,
+    Attestation,
+    ProposerSlashing,
+    Fork
+)
 
 
 class BeaconEndpoints:
-    StateId = Union[str, int]
-    ValidatorId = Union[str, int]
-
-    @staticmethod
-    def _check_state_id(state_id: StateId) -> None:
-        if isinstance(state_id, str) and not state_id.startswith("0x"):
-            assert state_id in [
-                "head",
-                "genesis",
-                "finalized",
-                "justified",
-            ], "state_id must be in [head, genesis, finalized, justified] or block number (int) or start with 0x"
-
-    @staticmethod
-    def _check_validator_id(validator_id: ValidatorId) -> None:
-        if isinstance(validator_id, str):
-            assert validator_id.startswith(
-                "0x"
-            ), "validator_id must be an index (int) or start with 0x"
-
-    def get_genesis(self) -> dict:
+    def get_genesis(self) -> GenesisDetails:
         """
         Retrieve details of the chain's genesis which can be used to identify chain.
         """
-        return self._query_url("/eth/v1/beacon/genesis")
+        value = self._query_url("/eth/v1/beacon/genesis")
+        data = parse_json(value["data"], GenesisDetails)
+        return data
 
-    def get_state_root(self, state_id: StateId) -> dict:
+    def get_state_root(self, state_id: StateId) -> Root:
         """
         Calculates HashTreeRoot for state with given 'state_id'. If state_id is root, same value will be returned.
 
         Args:
             state_id: Element of [head, genesis, finalized, justified] or block number (int) or string starting with 0x
         """
-        self._check_state_id(state_id)
-        return self._query_url(f"/eth/v1/beacon/states/{state_id}/root")
+        value = self._query_url(f"/eth/v1/beacon/states/{state_id}/root")
+        data = Root(value["data"]["root"])
+        return data
 
-    def get_fork_from_state(self, state_id: StateId) -> dict:
+    def get_fork_from_state(self, state_id: StateId) -> Fork:
         """
         Returns Fork object for state with given 'state_id'.
         Args:
             state_id: Element of [head, genesis, finalized, justified] or block number (int) or string starting with 0x
         """
-        self._check_state_id(state_id)
-        return self._query_url(f"/eth/v1/beacon/states/{state_id}/fork")
+        value = self._query_url(f"/eth/v1/beacon/states/{state_id}/fork")
+        data = parse_json(value["data"], Fork)
+        return data
 
-    def get_finality_checkpoints_from_state(self, state_id: StateId) -> dict:
+    def get_finality_checkpoints_from_state(
+        self, state_id: StateId
+    ) -> FinalityCheckpoints:
         """
         Returns finality checkpoints for state with given 'state_id'.
         In case finality is not yet achieved, checkpoint should return epoch 0 and ZERO_HASH as root.
         Args:
             state_id: Element of [head, genesis, finalized, justified] or block number (int) or string starting with 0x
         """
-        self._check_state_id(state_id)
-        return self._query_url(f"/eth/v1/beacon/states/{state_id}/finality_checkpoints")
+        value = self._query_url(
+            f"/eth/v1/beacon/states/{state_id}/finality_checkpoints"
+        )
+        data = parse_json(value["data"], FinalityCheckpoints)
+        return data
 
     def get_validators_from_state(
         self,
         state_id: StateId,
-        validator_list: Union[list[ValidatorId], None] = None,
+        validator_list: Union[List[ValidatorId], None] = None,
         pending_initialized: bool = False,
         pending_queued: bool = False,
         active_ongoing: bool = False,
@@ -74,7 +90,7 @@ class BeaconEndpoints:
         pending: bool = False,
         exited: bool = False,
         withdrawal: bool = False,
-    ) -> dict:
+    ) -> List[ValidatorSummary]:
         """
         Returns filterable list of validators with their balance, status and index.
         Information will be returned for all indices or public key that match known validators.
@@ -100,7 +116,6 @@ class BeaconEndpoints:
             exited: If true return validators with this status
             withdrawal: If true return validators with this status
         """
-        self._check_state_id(state_id)
         status = []
         if pending_initialized:
             status.append("pending_initialized")
@@ -130,28 +145,30 @@ class BeaconEndpoints:
             status.append("withdrawal")
         assert len(status) > 0, "Select at least one validator condition"
         params = {"status": status, "id": validator_list}
-        return self._query_url(
+        value = self._query_url(
             f"/eth/v1/beacon/states/{state_id}/validators", params=params
         )
+        data = parse_json(value["data"], ValidatorSummary)
+        return data
 
     def get_validators_from_state_by_id(
         self, state_id: StateId, validator_id: ValidatorId
-    ) -> dict:
+    ) -> ValidatorSummary:
         """
         Returns validator specified by state and id or public key along with status and balance.
         Args:
             state_id: Element of [head, genesis, finalized, justified] or block number (int) or string starting with 0x
             validator_id: Validator identified by public key or validator index
         """
-        self._check_state_id(state_id)
-        self._check_validator_id(validator_id)
-        return self._query_url(
+        value = self._query_url(
             f"/eth/v1/beacon/states/{state_id}/validators/{validator_id}"
         )
+        data = parse_json(value["data"], ValidatorSummary)
+        return data
 
     def get_validators_balances_from_state(
-        self, state_id: StateId, validator_list: Union[list, None] = None
-    ) -> dict:
+        self, state_id: StateId, validator_list: Union[List[ValidatorId], None] = None
+    ) -> List[BalanceSummary]:
         """
         Returns filterable list of validators balances.
         Balances will be returned for all indices or public key that match known validators.
@@ -165,17 +182,19 @@ class BeaconEndpoints:
             validator_list: List of validators identified by public key or validator index
         """
         params = {"id": validator_list}
-        return self._query_url(
+        value = self._query_url(
             f"/eth/v1/beacon/states/{state_id}/validator_balances", params=params
         )
+        data = parse_json(value["data"], BalanceSummary)
+        return data
 
     def get_committees_from_state(
         self,
         state_id: StateId,
-        epoch: Union[int, None] = None,
-        index: Union[int, None] = None,
-        slot: Union[int, None] = None,
-    ) -> dict:
+        epoch: Union[Epoch, None] = None,
+        index: Union[ValidatorIndex, None] = None,
+        slot: Union[Slot, None] = None,
+    ) -> List[CommitteeSummary]:
         """
         Retrieves the committees for the given state.
         Args:
@@ -185,13 +204,15 @@ class BeaconEndpoints:
             slot: Restrict returned values to those matching the supplied slot
         """
         params = {"epoch": epoch, "index": index, "slot": slot}
-        return self._query_url(
+        value = self._query_url(
             f"/eth/v1/beacon/states/{state_id}/committees", params=params
         )
+        data = parse_json(value["data"], CommitteeSummary)
+        return data
 
     def get_sync_committees_from_state(
-        self, state_id: StateId, epoch: Union[int, None] = None
-    ) -> dict:
+        self, state_id: StateId, epoch: Union[Epoch, None] = None
+    ) -> SyncCommitteeSummary:
         """
         Retrieves the sync committees for the given state.
         Args:
@@ -201,13 +222,15 @@ class BeaconEndpoints:
         params = {
             "epoch": epoch,
         }
-        return self._query_url(
+        value = self._query_url(
             f"/eth/v1/beacon/states/{state_id}/sync_committees", params=params
         )
+        data = parse_json(value["data"], SyncCommitteeSummary)
+        return data
 
     def get_headers(
-        self, slot: Union[int, None] = None, parent_root: Union[str, None] = None
-    ) -> dict:
+        self, slot: Union[Slot, None] = None, parent_root: Union[Root, None] = None
+    ) -> BeaconHeaderSummary:
         """
         Retrieves block headers matching given query. By default it will fetch current head slot blocks.
         Args:
@@ -215,19 +238,23 @@ class BeaconEndpoints:
             parent_root: Restrict returned values to those matching the supplied parent_root
         """
         params = {"slot": slot, "parent_root": parent_root}
-        return self._query_url("/eth/v1/beacon/headers", params=params)
+        value = self._query_url("/eth/v1/beacon/headers", params=params)
+        data = parse_json(value["data"], BeaconHeaderSummary)
+        return data
 
-    def get_headers_from_block_id(self, block_id) -> dict:
+    def get_headers_from_block_id(self, block_id: BlockId) -> BeaconHeaderSummary:
         """
         Retrieves block headers matching given query. By default it will fetch current head slot blocks.
         Args:
             block_id: Return block header matching given block id
         """
-        return self._query_url(f"/eth/v1/beacon/headers/{block_id}")
+        value = self._query_url(f"/eth/v1/beacon/headers/{block_id}")
+        data = parse_json(value["data"], BeaconHeaderSummary)
+        return data
 
     def get_block_from_block_id(
-        self, block_id, response_type: str = "json"
-    ) -> Union[dict, str]:
+        self, block_id: BlockId, response_type: str = "json"
+    ) -> Union[SignedBeaconBlock, str]:
         """
         Retrieves block details for given block id.
         Depending on Accept header it can be returned either as json or as bytes serialized by SSZ
@@ -236,32 +263,46 @@ class BeaconEndpoints:
             block_id: Return block matching given block id
             response_type: Element of [json, szz] that determines the return type
         """
-        assert response_type in ["json", "ssz"], "response_type must be in [json, ssz]"
-        if response_type == "json":
-            headers = {"Accept": "application/json"}
-        if response_type == "ssz":
-            headers = {"Accept": "application/octet-stream"}
-        return self._query_url(f"/eth/v2/beacon/blocks/{block_id}", headers=headers)
+        match response_type:
+            case "json":
+                headers = {"Accept": "application/json"}
+                value = self._query_url(
+                    f"/eth/v2/beacon/blocks/{block_id}", headers=headers
+                )
+                data = parse_json(value["data"], SignedBeaconBlock)
+                return data
+            case "ssz":
+                headers = {"Accept": "application/octet-stream"}
+                return self._query_url(
+                    f"/eth/v2/beacon/blocks/{block_id}", headers=headers
+                )
+            case other:
+                assert Exception("response_type must be in [json, ssz]")
 
-    def get_block_root_from_block_id(self, block_id) -> dict:
+    def get_block_root_from_block_id(self, block_id: BlockId) -> Root:
         """
         Retrieves hashTreeRoot of BeaconBlock/BeaconBlockHeader
         Args:
             block_id: Return block root matching given block id
         """
-        return self._query_url(f"/eth/v1/beacon/blocks/{block_id}/root")
+        value = self._query_url(f"/eth/v1/beacon/blocks/{block_id}/root")
+        return Root(value["data"]["root"])
 
-    def get_attestations_from_block_id(self, block_id) -> dict:
+    def get_attestations_from_block_id(self, block_id: BlockId) -> List[Attestation]:
         """
         Retrieves attestation included in requested block.
         Args:
             block_id: Return attestations matching given block id
         """
-        return self._query_url(f"/eth/v1/beacon/blocks/{block_id}/attestations")
+        value = self._query_url(f"/eth/v1/beacon/blocks/{block_id}/attestations")
+        data = parse_json(value["data"], Attestation)
+        return data
 
     def get_pool_attestations(
-        self, slot: Union[int, None] = None, committee_index: Union[int, None] = None
-    ) -> dict:
+        self,
+        slot: Union[Slot, None] = None,
+        committee_index: Union[CommitteeIndex, None] = None,
+    ) -> List[Attestation]:
         """
         Retrieves attestations known by the node but not necessarily incorporated into any block
         Args:
@@ -269,22 +310,30 @@ class BeaconEndpoints:
             committee_index: Restrict returned values to those matching the supplied committee index
         """
         params = {"slot": slot, "committee_index": committee_index}
-        return self._query_url("/eth/v1/beacon/pool/attestations", params=params)
+        value = self._query_url("/eth/v1/beacon/pool/attestations", params=params)
+        data = parse_json(value["data"], Attestation)
+        return data
 
-    def get_pool_attester_slashings(self) -> dict:
+    def get_pool_attester_slashings(self) -> list:
         """
         Retrieves attester slashings known by the node but not necessarily incorporated into any block
         """
-        return self._query_url("/eth/v1/beacon/pool/attester_slashings")
+        value = self._query_url("/eth/v1/beacon/pool/attester_slashings")
+        # unparsed because it is very hard to test since slashing is rare
+        return value["data"]
 
-    def get_pool_proposer_slashings(self) -> dict:
+    def get_pool_proposer_slashings(self) -> list:
         """
         Retrieves proposer slashings known by the node but not necessarily incorporated into any block
         """
-        return self._query_url("/eth/v1/beacon/pool/proposer_slashings")
+        value = self._query_url("/eth/v1/beacon/pool/proposer_slashings")
+        # unparsed because it is very hard to test since slashing is rare
+        return value["data"]
 
     def get_pool_voluntary_exits(self) -> dict:
         """
         Retrieves voluntary exits known by the node but not necessarily incorporated into any block
         """
-        return self._query_url("/eth/v1/beacon/pool/voluntary_exits")
+        value = self._query_url("/eth/v1/beacon/pool/voluntary_exits")
+        # unparsed because it is very hard to test since slashing is rare
+        return value["data"]

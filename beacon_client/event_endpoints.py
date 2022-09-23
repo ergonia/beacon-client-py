@@ -1,4 +1,7 @@
 from sseclient import SSEClient
+from .utils.parsing import parse_json
+from .utils.types import StreamedHead, StreamedBlock, Attestation, StreamedCheckpoint
+import json
 
 
 class EventEndpoints:
@@ -49,3 +52,23 @@ class EventEndpoints:
         )
         client = SSEClient(response)
         return client.events()
+
+    @staticmethod
+    def parse_head(data):
+        data = parse_json(json.loads(data), StreamedHead)
+        return data
+
+    @staticmethod
+    def parse_block(data):
+        data = parse_json(json.loads(data), StreamedBlock)
+        return data
+
+    @staticmethod
+    def parse_attestation(data):
+        data = parse_json(json.loads(data), Attestation)
+        return data
+
+    @staticmethod
+    def parse_checkpoint(data):
+        data = parse_json(json.loads(data), StreamedCheckpoint)
+        return data
