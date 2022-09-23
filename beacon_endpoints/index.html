@@ -9,7 +9,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.3.1, mkdocs-material-8.5.1">
+      <meta name="generator" content="mkdocs-1.3.1, mkdocs-material-8.5.3">
     
     
       
@@ -17,7 +17,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.2e8b5541.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.7a952b86.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.cbb835fc.min.css">
@@ -778,34 +778,7 @@
 
         <details class="quote">
           <summary>Source code in <code>beacon_client/beacon_endpoints.py</code></summary>
-          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">  4</span>
-<span class="normal">  5</span>
-<span class="normal">  6</span>
-<span class="normal">  7</span>
-<span class="normal">  8</span>
-<span class="normal">  9</span>
-<span class="normal"> 10</span>
-<span class="normal"> 11</span>
-<span class="normal"> 12</span>
-<span class="normal"> 13</span>
-<span class="normal"> 14</span>
-<span class="normal"> 15</span>
-<span class="normal"> 16</span>
-<span class="normal"> 17</span>
-<span class="normal"> 18</span>
-<span class="normal"> 19</span>
-<span class="normal"> 20</span>
-<span class="normal"> 21</span>
-<span class="normal"> 22</span>
-<span class="normal"> 23</span>
-<span class="normal"> 24</span>
-<span class="normal"> 25</span>
-<span class="normal"> 26</span>
-<span class="normal"> 27</span>
-<span class="normal"> 28</span>
-<span class="normal"> 29</span>
-<span class="normal"> 30</span>
-<span class="normal"> 31</span>
+          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 31</span>
 <span class="normal"> 32</span>
 <span class="normal"> 33</span>
 <span class="normal"> 34</span>
@@ -1004,54 +977,164 @@
 <span class="normal">227</span>
 <span class="normal">228</span>
 <span class="normal">229</span>
-<span class="normal">230</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">BeaconEndpoints</span><span class="p">:</span>
-    <span class="n">StateId</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span>
-
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_check_state_id</span><span class="p">(</span><span class="n">state_id</span><span class="p">:</span> <span class="n">StateId</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">state_id</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">state_id</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;0x&quot;</span><span class="p">):</span>
-            <span class="k">assert</span> <span class="n">state_id</span> <span class="ow">in</span> <span class="p">[</span>
-                <span class="s2">&quot;head&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;genesis&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;finalized&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;justified&quot;</span><span class="p">,</span>
-            <span class="p">],</span> <span class="s2">&quot;state_id must be in [head, genesis, finalized, justified] or block number (int) or start with 0x&quot;</span>
-
-    <span class="k">def</span> <span class="nf">get_genesis</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="normal">230</span>
+<span class="normal">231</span>
+<span class="normal">232</span>
+<span class="normal">233</span>
+<span class="normal">234</span>
+<span class="normal">235</span>
+<span class="normal">236</span>
+<span class="normal">237</span>
+<span class="normal">238</span>
+<span class="normal">239</span>
+<span class="normal">240</span>
+<span class="normal">241</span>
+<span class="normal">242</span>
+<span class="normal">243</span>
+<span class="normal">244</span>
+<span class="normal">245</span>
+<span class="normal">246</span>
+<span class="normal">247</span>
+<span class="normal">248</span>
+<span class="normal">249</span>
+<span class="normal">250</span>
+<span class="normal">251</span>
+<span class="normal">252</span>
+<span class="normal">253</span>
+<span class="normal">254</span>
+<span class="normal">255</span>
+<span class="normal">256</span>
+<span class="normal">257</span>
+<span class="normal">258</span>
+<span class="normal">259</span>
+<span class="normal">260</span>
+<span class="normal">261</span>
+<span class="normal">262</span>
+<span class="normal">263</span>
+<span class="normal">264</span>
+<span class="normal">265</span>
+<span class="normal">266</span>
+<span class="normal">267</span>
+<span class="normal">268</span>
+<span class="normal">269</span>
+<span class="normal">270</span>
+<span class="normal">271</span>
+<span class="normal">272</span>
+<span class="normal">273</span>
+<span class="normal">274</span>
+<span class="normal">275</span>
+<span class="normal">276</span>
+<span class="normal">277</span>
+<span class="normal">278</span>
+<span class="normal">279</span>
+<span class="normal">280</span>
+<span class="normal">281</span>
+<span class="normal">282</span>
+<span class="normal">283</span>
+<span class="normal">284</span>
+<span class="normal">285</span>
+<span class="normal">286</span>
+<span class="normal">287</span>
+<span class="normal">288</span>
+<span class="normal">289</span>
+<span class="normal">290</span>
+<span class="normal">291</span>
+<span class="normal">292</span>
+<span class="normal">293</span>
+<span class="normal">294</span>
+<span class="normal">295</span>
+<span class="normal">296</span>
+<span class="normal">297</span>
+<span class="normal">298</span>
+<span class="normal">299</span>
+<span class="normal">300</span>
+<span class="normal">301</span>
+<span class="normal">302</span>
+<span class="normal">303</span>
+<span class="normal">304</span>
+<span class="normal">305</span>
+<span class="normal">306</span>
+<span class="normal">307</span>
+<span class="normal">308</span>
+<span class="normal">309</span>
+<span class="normal">310</span>
+<span class="normal">311</span>
+<span class="normal">312</span>
+<span class="normal">313</span>
+<span class="normal">314</span>
+<span class="normal">315</span>
+<span class="normal">316</span>
+<span class="normal">317</span>
+<span class="normal">318</span>
+<span class="normal">319</span>
+<span class="normal">320</span>
+<span class="normal">321</span>
+<span class="normal">322</span>
+<span class="normal">323</span>
+<span class="normal">324</span>
+<span class="normal">325</span>
+<span class="normal">326</span>
+<span class="normal">327</span>
+<span class="normal">328</span>
+<span class="normal">329</span>
+<span class="normal">330</span>
+<span class="normal">331</span>
+<span class="normal">332</span>
+<span class="normal">333</span>
+<span class="normal">334</span>
+<span class="normal">335</span>
+<span class="normal">336</span>
+<span class="normal">337</span>
+<span class="normal">338</span>
+<span class="normal">339</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">BeaconEndpoints</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">get_genesis</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GenesisDetails</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Retrieve details of the chain&#39;s genesis which can be used to identify chain.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span><span class="s2">&quot;/eth/v1/beacon/genesis&quot;</span><span class="p">)</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span><span class="s2">&quot;/eth/v1/beacon/genesis&quot;</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">parse_json</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">],</span> <span class="n">GenesisDetails</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">data</span>
 
-    <span class="k">def</span> <span class="nf">get_state_root</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_id</span><span class="p">:</span> <span class="n">StateId</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">get_state_root</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_id</span><span class="p">:</span> <span class="n">StateId</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Root</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculates HashTreeRoot for state with given &#39;state_id&#39;. If state_id is root, same value will be returned.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            state_id: element of [head, genesis, finalized, justified] or block number (int) or string starting with 0x</span>
+<span class="sd">            state_id: Element of [head, genesis, finalized, justified] or block number (int) or string starting with 0x</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_check_state_id</span><span class="p">(</span><span class="n">state_id</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;/eth/v1/beacon/states/</span><span class="si">{</span><span class="n">state_id</span><span class="si">}</span><span class="s2">/root&quot;</span><span class="p">)</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;/eth/v1/beacon/states/</span><span class="si">{</span><span class="n">state_id</span><span class="si">}</span><span class="s2">/root&quot;</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">Root</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="s2">&quot;root&quot;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">data</span>
 
-    <span class="k">def</span> <span class="nf">get_fork_from_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_id</span><span class="p">:</span> <span class="n">StateId</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">get_fork_from_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_id</span><span class="p">:</span> <span class="n">StateId</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Fork</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns Fork object for state with given &#39;state_id&#39;.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            state_id: Element of [head, genesis, finalized, justified] or block number (int) or string starting with 0x</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_check_state_id</span><span class="p">(</span><span class="n">state_id</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;/eth/v1/beacon/states/</span><span class="si">{</span><span class="n">state_id</span><span class="si">}</span><span class="s2">/fork&quot;</span><span class="p">)</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;/eth/v1/beacon/states/</span><span class="si">{</span><span class="n">state_id</span><span class="si">}</span><span class="s2">/fork&quot;</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">parse_json</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">],</span> <span class="n">Fork</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">data</span>
 
-    <span class="k">def</span> <span class="nf">get_finality_checkpoints_from_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_id</span><span class="p">:</span> <span class="n">StateId</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">get_finality_checkpoints_from_state</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">state_id</span><span class="p">:</span> <span class="n">StateId</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FinalityCheckpoints</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns finality checkpoints for state with given &#39;state_id&#39;.</span>
 <span class="sd">        In case finality is not yet achieved, checkpoint should return epoch 0 and ZERO_HASH as root.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            state_id: Element of [head, genesis, finalized, justified] or block number (int) or string starting with 0x</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_check_state_id</span><span class="p">(</span><span class="n">state_id</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;/eth/v1/beacon/states/</span><span class="si">{</span><span class="n">state_id</span><span class="si">}</span><span class="s2">/finality_checkpoints&quot;</span><span class="p">)</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;/eth/v1/beacon/states/</span><span class="si">{</span><span class="n">state_id</span><span class="si">}</span><span class="s2">/finality_checkpoints&quot;</span>
+        <span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">parse_json</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">],</span> <span class="n">FinalityCheckpoints</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">data</span>
 
     <span class="k">def</span> <span class="nf">get_validators_from_state</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">state_id</span><span class="p">:</span> <span class="n">StateId</span><span class="p">,</span>
-        <span class="n">validator_list</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">validator_list</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">ValidatorId</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">pending_initialized</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">pending_queued</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">active_ongoing</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -1065,7 +1148,7 @@
         <span class="n">pending</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">exited</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">withdrawal</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">ValidatorSummary</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns filterable list of validators with their balance, status and index.</span>
 <span class="sd">        Information will be returned for all indices or public key that match known validators.</span>
@@ -1074,8 +1157,23 @@
 <span class="sd">        There are no guarantees for the returned data in terms of ordering;</span>
 <span class="sd">        both the index and public key are returned for each validator,</span>
 <span class="sd">        and can be used to confirm for which inputs a response has been returned.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            state_id: Element of [head, genesis, finalized, justified] or block number (int) or string starting with 0x</span>
+<span class="sd">            validator_list: List of validators identified by public key or validator index</span>
+<span class="sd">            pending_initialized: If true return validators with this status</span>
+<span class="sd">            pending_queued: If true return validators with this status</span>
+<span class="sd">            active_ongoing: If true return validators with this status</span>
+<span class="sd">            active_exiting: If true return validators with this status</span>
+<span class="sd">            active_slashed: If true return validators with this status</span>
+<span class="sd">            exited_unslashed: If true return validators with this status</span>
+<span class="sd">            exited_slashed: If true return validators with this status</span>
+<span class="sd">            withdrawal_possible: If true return validators with this status</span>
+<span class="sd">            withdrawal_done: If true return validators with this status</span>
+<span class="sd">            active: If true return validators with this status</span>
+<span class="sd">            pending: If true return validators with this status</span>
+<span class="sd">            exited: If true return validators with this status</span>
+<span class="sd">            withdrawal: If true return validators with this status</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_check_state_id</span><span class="p">(</span><span class="n">state_id</span><span class="p">)</span>
         <span class="n">status</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">if</span> <span class="n">pending_initialized</span><span class="p">:</span>
             <span class="n">status</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;pending_initialized&quot;</span><span class="p">)</span>
@@ -1105,22 +1203,30 @@
             <span class="n">status</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;withdrawal&quot;</span><span class="p">)</span>
         <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">status</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Select at least one validator condition&quot;</span>
         <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="n">status</span><span class="p">,</span> <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">validator_list</span><span class="p">}</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;/eth/v1/beacon/states/</span><span class="si">{</span><span class="n">state_id</span><span class="si">}</span><span class="s2">/validators&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span>
         <span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">parse_json</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">],</span> <span class="n">ValidatorSummary</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">data</span>
 
-    <span class="k">def</span> <span class="nf">get_validators_from_state_by_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_id</span><span class="p">:</span> <span class="n">StateId</span><span class="p">,</span> <span class="n">validator_id</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">get_validators_from_state_by_id</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">state_id</span><span class="p">:</span> <span class="n">StateId</span><span class="p">,</span> <span class="n">validator_id</span><span class="p">:</span> <span class="n">ValidatorId</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ValidatorSummary</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns validator specified by state and id or public key along with status and balance.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            state_id: Element of [head, genesis, finalized, justified] or block number (int) or string starting with 0x</span>
+<span class="sd">            validator_id: Validator identified by public key or validator index</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_check_state_id</span><span class="p">(</span><span class="n">state_id</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;/eth/v1/beacon/states/</span><span class="si">{</span><span class="n">state_id</span><span class="si">}</span><span class="s2">/validators/</span><span class="si">{</span><span class="n">validator_id</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">parse_json</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">],</span> <span class="n">ValidatorSummary</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">data</span>
 
     <span class="k">def</span> <span class="nf">get_validators_balances_from_state</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">state_id</span><span class="p">:</span> <span class="n">StateId</span><span class="p">,</span> <span class="n">validator_list</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">state_id</span><span class="p">:</span> <span class="n">StateId</span><span class="p">,</span> <span class="n">validator_list</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">ValidatorId</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">BalanceSummary</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns filterable list of validators balances.</span>
 <span class="sd">        Balances will be returned for all indices or public key that match known validators.</span>
@@ -1129,108 +1235,166 @@
 <span class="sd">        There are no guarantees for the returned data in terms of ordering;</span>
 <span class="sd">        the index and is returned for each balance,</span>
 <span class="sd">        and can be used to confirm for which inputs a response has been returned.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            state_id: Element of [head, genesis, finalized, justified] or block number (int) or string starting with 0x</span>
+<span class="sd">            validator_list: List of validators identified by public key or validator index</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">validator_list</span><span class="p">}</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;/eth/v1/beacon/states/</span><span class="si">{</span><span class="n">state_id</span><span class="si">}</span><span class="s2">/validator_balances&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span>
         <span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">parse_json</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">],</span> <span class="n">BalanceSummary</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">data</span>
 
     <span class="k">def</span> <span class="nf">get_committees_from_state</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">state_id</span><span class="p">:</span> <span class="n">StateId</span><span class="p">,</span>
-        <span class="n">epoch</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">index</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">slot</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="n">epoch</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Epoch</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">index</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ValidatorIndex</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">slot</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Slot</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">CommitteeSummary</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Retrieves the committees for the given state.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            state_id: Element of [head, genesis, finalized, justified] or block number (int) or string starting with 0x</span>
+<span class="sd">            epoch: Fetch committees for the given epoch. If not present then the committees for the epoch of the state will be obtained</span>
+<span class="sd">            index: Restrict returned values to those matching the supplied committee index</span>
+<span class="sd">            slot: Restrict returned values to those matching the supplied slot</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;epoch&quot;</span><span class="p">:</span> <span class="n">epoch</span><span class="p">,</span> <span class="s2">&quot;index&quot;</span><span class="p">:</span> <span class="n">index</span><span class="p">,</span> <span class="s2">&quot;slot&quot;</span><span class="p">:</span> <span class="n">slot</span><span class="p">}</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;/eth/v1/beacon/states/</span><span class="si">{</span><span class="n">state_id</span><span class="si">}</span><span class="s2">/committees&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span>
         <span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">parse_json</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">],</span> <span class="n">CommitteeSummary</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">data</span>
 
     <span class="k">def</span> <span class="nf">get_sync_committees_from_state</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">state_id</span><span class="p">,</span> <span class="n">epoch</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">state_id</span><span class="p">:</span> <span class="n">StateId</span><span class="p">,</span> <span class="n">epoch</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Epoch</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SyncCommitteeSummary</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Retrieves the sync committees for the given state.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            state_id: Element of [head, genesis, finalized, justified] or block number (int) or string starting with 0x</span>
+<span class="sd">            epoch: Fetch committees for the given epoch. If not present then the committees for the epoch of the state will be obtained</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;epoch&quot;</span><span class="p">:</span> <span class="n">epoch</span><span class="p">,</span>
         <span class="p">}</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;/eth/v1/beacon/states/</span><span class="si">{</span><span class="n">state_id</span><span class="si">}</span><span class="s2">/sync_committees&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span>
         <span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">parse_json</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">],</span> <span class="n">SyncCommitteeSummary</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">data</span>
 
     <span class="k">def</span> <span class="nf">get_headers</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">slot</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">parent_root</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">slot</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Slot</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">parent_root</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Root</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BeaconHeaderSummary</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Retrieves block headers matching given query. By default it will fetch current head slot blocks.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            slot: Restrict returned values to those matching the supplied slot</span>
+<span class="sd">            parent_root: Restrict returned values to those matching the supplied parent_root</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;slot&quot;</span><span class="p">:</span> <span class="n">slot</span><span class="p">,</span> <span class="s2">&quot;parent_root&quot;</span><span class="p">:</span> <span class="n">parent_root</span><span class="p">}</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span><span class="s2">&quot;/eth/v1/beacon/headers&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span><span class="s2">&quot;/eth/v1/beacon/headers&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">parse_json</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">],</span> <span class="n">BeaconHeaderSummary</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">data</span>
 
-    <span class="k">def</span> <span class="nf">get_headers_from_block_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">block_id</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">get_headers_from_block_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">block_id</span><span class="p">:</span> <span class="n">BlockId</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BeaconHeaderSummary</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Retrieves block headers matching given query. By default it will fetch current head slot blocks.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            block_id: Return block header matching given block id</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;/eth/v1/beacon/headers/</span><span class="si">{</span><span class="n">block_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;/eth/v1/beacon/headers/</span><span class="si">{</span><span class="n">block_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">parse_json</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">],</span> <span class="n">BeaconHeaderSummary</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">data</span>
 
     <span class="k">def</span> <span class="nf">get_block_from_block_id</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">block_id</span><span class="p">,</span> <span class="n">response_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;json&quot;</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">block_id</span><span class="p">:</span> <span class="n">BlockId</span><span class="p">,</span> <span class="n">response_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;json&quot;</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">SignedBeaconBlock</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Retrieves block details for given block id.</span>
 <span class="sd">        Depending on Accept header it can be returned either as json or as bytes serialized by SSZ</span>
 <span class="sd">        response_type in [json, ssz]</span>
+<span class="sd">        Args:</span>
+<span class="sd">            block_id: Return block matching given block id</span>
+<span class="sd">            response_type: Element of [json, szz] that determines the return type</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">assert</span> <span class="n">response_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;json&quot;</span><span class="p">,</span> <span class="s2">&quot;ssz&quot;</span><span class="p">],</span> <span class="s2">&quot;response_type must be in [json, ssz]&quot;</span>
-        <span class="k">if</span> <span class="n">response_type</span> <span class="o">==</span> <span class="s2">&quot;json&quot;</span><span class="p">:</span>
-            <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Accept&quot;</span><span class="p">:</span> <span class="s2">&quot;application/json&quot;</span><span class="p">}</span>
-        <span class="k">if</span> <span class="n">response_type</span> <span class="o">==</span> <span class="s2">&quot;ssz&quot;</span><span class="p">:</span>
-            <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Accept&quot;</span><span class="p">:</span> <span class="s2">&quot;application/octet-stream&quot;</span><span class="p">}</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;/eth/v2/beacon/blocks/</span><span class="si">{</span><span class="n">block_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+        <span class="k">match</span> <span class="n">response_type</span><span class="p">:</span>
+            <span class="k">case</span> <span class="s2">&quot;json&quot;</span><span class="p">:</span>
+                <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Accept&quot;</span><span class="p">:</span> <span class="s2">&quot;application/json&quot;</span><span class="p">}</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;/eth/v2/beacon/blocks/</span><span class="si">{</span><span class="n">block_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span>
+                <span class="p">)</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">parse_json</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">],</span> <span class="n">SignedBeaconBlock</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">data</span>
+            <span class="k">case</span> <span class="s2">&quot;ssz&quot;</span><span class="p">:</span>
+                <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Accept&quot;</span><span class="p">:</span> <span class="s2">&quot;application/octet-stream&quot;</span><span class="p">}</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;/eth/v2/beacon/blocks/</span><span class="si">{</span><span class="n">block_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span>
+                <span class="p">)</span>
+            <span class="k">case</span> <span class="n">other</span><span class="p">:</span>
+                <span class="k">assert</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;response_type must be in [json, ssz]&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">get_block_root_from_block_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">block_id</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">get_block_root_from_block_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">block_id</span><span class="p">:</span> <span class="n">BlockId</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Root</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Retrieves hashTreeRoot of BeaconBlock/BeaconBlockHeader</span>
+<span class="sd">        Args:</span>
+<span class="sd">            block_id: Return block root matching given block id</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;/eth/v1/beacon/blocks/</span><span class="si">{</span><span class="n">block_id</span><span class="si">}</span><span class="s2">/root&quot;</span><span class="p">)</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;/eth/v1/beacon/blocks/</span><span class="si">{</span><span class="n">block_id</span><span class="si">}</span><span class="s2">/root&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Root</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="s2">&quot;root&quot;</span><span class="p">])</span>
 
-    <span class="k">def</span> <span class="nf">get_attestations_from_block_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">block_id</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">get_attestations_from_block_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">block_id</span><span class="p">:</span> <span class="n">BlockId</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Attestation</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Retrieves attestation included in requested block.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            block_id: Return attestations matching given block id</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;/eth/v1/beacon/blocks/</span><span class="si">{</span><span class="n">block_id</span><span class="si">}</span><span class="s2">/attestations&quot;</span><span class="p">)</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;/eth/v1/beacon/blocks/</span><span class="si">{</span><span class="n">block_id</span><span class="si">}</span><span class="s2">/attestations&quot;</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">parse_json</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">],</span> <span class="n">Attestation</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">data</span>
 
     <span class="k">def</span> <span class="nf">get_pool_attestations</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">slot</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">committee_index</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">slot</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Slot</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">committee_index</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">CommitteeIndex</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Attestation</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Retrieves attestations known by the node but not necessarily incorporated into any block</span>
+<span class="sd">        Args:</span>
+<span class="sd">            slot: Restrict returned values to those matching the supplied slot</span>
+<span class="sd">            committee_index: Restrict returned values to those matching the supplied committee index</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;slot&quot;</span><span class="p">:</span> <span class="n">slot</span><span class="p">,</span> <span class="s2">&quot;committee_index&quot;</span><span class="p">:</span> <span class="n">committee_index</span><span class="p">}</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span><span class="s2">&quot;/eth/v1/beacon/pool/attestations&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span><span class="s2">&quot;/eth/v1/beacon/pool/attestations&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">parse_json</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">],</span> <span class="n">Attestation</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">data</span>
 
-    <span class="k">def</span> <span class="nf">get_pool_attester_slashings</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">get_pool_attester_slashings</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Retrieves attester slashings known by the node but not necessarily incorporated into any block</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span><span class="s2">&quot;/eth/v1/beacon/pool/attester_slashings&quot;</span><span class="p">)</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span><span class="s2">&quot;/eth/v1/beacon/pool/attester_slashings&quot;</span><span class="p">)</span>
+        <span class="c1"># unparsed because it is very hard to test since slashing is rare</span>
+        <span class="k">return</span> <span class="n">value</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">get_pool_proposer_slashings</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">get_pool_proposer_slashings</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Retrieves proposer slashings known by the node but not necessarily incorporated into any block</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span><span class="s2">&quot;/eth/v1/beacon/pool/proposer_slashings&quot;</span><span class="p">)</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span><span class="s2">&quot;/eth/v1/beacon/pool/proposer_slashings&quot;</span><span class="p">)</span>
+        <span class="c1"># unparsed because it is very hard to test since slashing is rare</span>
+        <span class="k">return</span> <span class="n">value</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">get_pool_voluntary_exits</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Retrieves voluntary exits known by the node but not necessarily incorporated into any block</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span><span class="s2">&quot;/eth/v1/beacon/pool/voluntary_exits&quot;</span><span class="p">)</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span><span class="s2">&quot;/eth/v1/beacon/pool/voluntary_exits&quot;</span><span class="p">)</span>
+        <span class="c1"># unparsed because it is very hard to test since slashing is rare</span>
+        <span class="k">return</span> <span class="n">value</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span>
 </code></pre></div></td></tr></table></div>
         </details>
 
@@ -1260,17 +1424,49 @@
   
       <p>Retrieves attestation included in requested block.</p>
 
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>block_id</code></td>
+          <td>
+                <code><span title="beacon_client.utils.types.BlockId">BlockId</span></code>
+          </td>
+          <td><p>Return attestations matching given block id</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
       <details class="quote">
         <summary>Source code in <code>beacon_client/beacon_endpoints.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">199</span>
-<span class="normal">200</span>
-<span class="normal">201</span>
-<span class="normal">202</span>
-<span class="normal">203</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_attestations_from_block_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">block_id</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">291</span>
+<span class="normal">292</span>
+<span class="normal">293</span>
+<span class="normal">294</span>
+<span class="normal">295</span>
+<span class="normal">296</span>
+<span class="normal">297</span>
+<span class="normal">298</span>
+<span class="normal">299</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_attestations_from_block_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">block_id</span><span class="p">:</span> <span class="n">BlockId</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Attestation</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Retrieves attestation included in requested block.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        block_id: Return attestations matching given block id</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;/eth/v1/beacon/blocks/</span><span class="si">{</span><span class="n">block_id</span><span class="si">}</span><span class="s2">/attestations&quot;</span><span class="p">)</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;/eth/v1/beacon/blocks/</span><span class="si">{</span><span class="n">block_id</span><span class="si">}</span><span class="s2">/attestations&quot;</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">parse_json</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">],</span> <span class="n">Attestation</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">data</span>
 </code></pre></div></td></tr></table></div>
       </details>
   </div>
@@ -1293,35 +1489,93 @@
 Depending on Accept header it can be returned either as json or as bytes serialized by SSZ
 response_type in [json, ssz]</p>
 
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>block_id</code></td>
+          <td>
+                <code><span title="beacon_client.utils.types.BlockId">BlockId</span></code>
+          </td>
+          <td><p>Return block matching given block id</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>response_type</code></td>
+          <td>
+                <code>str</code>
+          </td>
+          <td><p>Element of [json, szz] that determines the return type</p></td>
+          <td>
+                <code>&#39;json&#39;</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
       <details class="quote">
         <summary>Source code in <code>beacon_client/beacon_endpoints.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">178</span>
-<span class="normal">179</span>
-<span class="normal">180</span>
-<span class="normal">181</span>
-<span class="normal">182</span>
-<span class="normal">183</span>
-<span class="normal">184</span>
-<span class="normal">185</span>
-<span class="normal">186</span>
-<span class="normal">187</span>
-<span class="normal">188</span>
-<span class="normal">189</span>
-<span class="normal">190</span>
-<span class="normal">191</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_block_from_block_id</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">,</span> <span class="n">block_id</span><span class="p">,</span> <span class="n">response_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;json&quot;</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">255</span>
+<span class="normal">256</span>
+<span class="normal">257</span>
+<span class="normal">258</span>
+<span class="normal">259</span>
+<span class="normal">260</span>
+<span class="normal">261</span>
+<span class="normal">262</span>
+<span class="normal">263</span>
+<span class="normal">264</span>
+<span class="normal">265</span>
+<span class="normal">266</span>
+<span class="normal">267</span>
+<span class="normal">268</span>
+<span class="normal">269</span>
+<span class="normal">270</span>
+<span class="normal">271</span>
+<span class="normal">272</span>
+<span class="normal">273</span>
+<span class="normal">274</span>
+<span class="normal">275</span>
+<span class="normal">276</span>
+<span class="normal">277</span>
+<span class="normal">278</span>
+<span class="normal">279</span>
+<span class="normal">280</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_block_from_block_id</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span> <span class="n">block_id</span><span class="p">:</span> <span class="n">BlockId</span><span class="p">,</span> <span class="n">response_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;json&quot;</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">SignedBeaconBlock</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Retrieves block details for given block id.</span>
 <span class="sd">    Depending on Accept header it can be returned either as json or as bytes serialized by SSZ</span>
 <span class="sd">    response_type in [json, ssz]</span>
+<span class="sd">    Args:</span>
+<span class="sd">        block_id: Return block matching given block id</span>
+<span class="sd">        response_type: Element of [json, szz] that determines the return type</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">assert</span> <span class="n">response_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;json&quot;</span><span class="p">,</span> <span class="s2">&quot;ssz&quot;</span><span class="p">],</span> <span class="s2">&quot;response_type must be in [json, ssz]&quot;</span>
-    <span class="k">if</span> <span class="n">response_type</span> <span class="o">==</span> <span class="s2">&quot;json&quot;</span><span class="p">:</span>
-        <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Accept&quot;</span><span class="p">:</span> <span class="s2">&quot;application/json&quot;</span><span class="p">}</span>
-    <span class="k">if</span> <span class="n">response_type</span> <span class="o">==</span> <span class="s2">&quot;ssz&quot;</span><span class="p">:</span>
-        <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Accept&quot;</span><span class="p">:</span> <span class="s2">&quot;application/octet-stream&quot;</span><span class="p">}</span>
-    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;/eth/v2/beacon/blocks/</span><span class="si">{</span><span class="n">block_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+    <span class="k">match</span> <span class="n">response_type</span><span class="p">:</span>
+        <span class="k">case</span> <span class="s2">&quot;json&quot;</span><span class="p">:</span>
+            <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Accept&quot;</span><span class="p">:</span> <span class="s2">&quot;application/json&quot;</span><span class="p">}</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;/eth/v2/beacon/blocks/</span><span class="si">{</span><span class="n">block_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span>
+            <span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">parse_json</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">],</span> <span class="n">SignedBeaconBlock</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">data</span>
+        <span class="k">case</span> <span class="s2">&quot;ssz&quot;</span><span class="p">:</span>
+            <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Accept&quot;</span><span class="p">:</span> <span class="s2">&quot;application/octet-stream&quot;</span><span class="p">}</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;/eth/v2/beacon/blocks/</span><span class="si">{</span><span class="n">block_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span>
+            <span class="p">)</span>
+        <span class="k">case</span> <span class="n">other</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;response_type must be in [json, ssz]&quot;</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
       </details>
   </div>
@@ -1342,17 +1596,47 @@ response_type in [json, ssz]</p>
   
       <p>Retrieves hashTreeRoot of BeaconBlock/BeaconBlockHeader</p>
 
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>block_id</code></td>
+          <td>
+                <code><span title="beacon_client.utils.types.BlockId">BlockId</span></code>
+          </td>
+          <td><p>Return block root matching given block id</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
       <details class="quote">
         <summary>Source code in <code>beacon_client/beacon_endpoints.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">193</span>
-<span class="normal">194</span>
-<span class="normal">195</span>
-<span class="normal">196</span>
-<span class="normal">197</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_block_root_from_block_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">block_id</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">282</span>
+<span class="normal">283</span>
+<span class="normal">284</span>
+<span class="normal">285</span>
+<span class="normal">286</span>
+<span class="normal">287</span>
+<span class="normal">288</span>
+<span class="normal">289</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_block_root_from_block_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">block_id</span><span class="p">:</span> <span class="n">BlockId</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Root</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Retrieves hashTreeRoot of BeaconBlock/BeaconBlockHeader</span>
+<span class="sd">    Args:</span>
+<span class="sd">        block_id: Return block root matching given block id</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;/eth/v1/beacon/blocks/</span><span class="si">{</span><span class="n">block_id</span><span class="si">}</span><span class="s2">/root&quot;</span><span class="p">)</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;/eth/v1/beacon/blocks/</span><span class="si">{</span><span class="n">block_id</span><span class="si">}</span><span class="s2">/root&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Root</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="s2">&quot;root&quot;</span><span class="p">])</span>
 </code></pre></div></td></tr></table></div>
       </details>
   </div>
@@ -1373,35 +1657,103 @@ response_type in [json, ssz]</p>
   
       <p>Retrieves the committees for the given state.</p>
 
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>state_id</code></td>
+          <td>
+                <code><span title="beacon_client.utils.types.StateId">StateId</span></code>
+          </td>
+          <td><p>Element of [head, genesis, finalized, justified] or block number (int) or string starting with 0x</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>epoch</code></td>
+          <td>
+                <code><span title="typing.Union">Union</span>[<span title="beacon_client.utils.types.Epoch">Epoch</span>, None]</code>
+          </td>
+          <td><p>Fetch committees for the given epoch. If not present then the committees for the epoch of the state will be obtained</p></td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>index</code></td>
+          <td>
+                <code><span title="typing.Union">Union</span>[<span title="beacon_client.utils.types.ValidatorIndex">ValidatorIndex</span>, None]</code>
+          </td>
+          <td><p>Restrict returned values to those matching the supplied committee index</p></td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>slot</code></td>
+          <td>
+                <code><span title="typing.Union">Union</span>[<span title="beacon_client.utils.types.Slot">Slot</span>, None]</code>
+          </td>
+          <td><p>Restrict returned values to those matching the supplied slot</p></td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
       <details class="quote">
         <summary>Source code in <code>beacon_client/beacon_endpoints.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">135</span>
-<span class="normal">136</span>
-<span class="normal">137</span>
-<span class="normal">138</span>
-<span class="normal">139</span>
-<span class="normal">140</span>
-<span class="normal">141</span>
-<span class="normal">142</span>
-<span class="normal">143</span>
-<span class="normal">144</span>
-<span class="normal">145</span>
-<span class="normal">146</span>
-<span class="normal">147</span>
-<span class="normal">148</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_committees_from_state</span><span class="p">(</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">191</span>
+<span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span>
+<span class="normal">195</span>
+<span class="normal">196</span>
+<span class="normal">197</span>
+<span class="normal">198</span>
+<span class="normal">199</span>
+<span class="normal">200</span>
+<span class="normal">201</span>
+<span class="normal">202</span>
+<span class="normal">203</span>
+<span class="normal">204</span>
+<span class="normal">205</span>
+<span class="normal">206</span>
+<span class="normal">207</span>
+<span class="normal">208</span>
+<span class="normal">209</span>
+<span class="normal">210</span>
+<span class="normal">211</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_committees_from_state</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">state_id</span><span class="p">:</span> <span class="n">StateId</span><span class="p">,</span>
-    <span class="n">epoch</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">index</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">slot</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="n">epoch</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Epoch</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">index</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ValidatorIndex</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">slot</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Slot</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">CommitteeSummary</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Retrieves the committees for the given state.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        state_id: Element of [head, genesis, finalized, justified] or block number (int) or string starting with 0x</span>
+<span class="sd">        epoch: Fetch committees for the given epoch. If not present then the committees for the epoch of the state will be obtained</span>
+<span class="sd">        index: Restrict returned values to those matching the supplied committee index</span>
+<span class="sd">        slot: Restrict returned values to those matching the supplied slot</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;epoch&quot;</span><span class="p">:</span> <span class="n">epoch</span><span class="p">,</span> <span class="s2">&quot;index&quot;</span><span class="p">:</span> <span class="n">index</span><span class="p">,</span> <span class="s2">&quot;slot&quot;</span><span class="p">:</span> <span class="n">slot</span><span class="p">}</span>
-    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span>
         <span class="sa">f</span><span class="s2">&quot;/eth/v1/beacon/states/</span><span class="si">{</span><span class="n">state_id</span><span class="si">}</span><span class="s2">/committees&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span>
     <span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">parse_json</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">],</span> <span class="n">CommitteeSummary</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">data</span>
 </code></pre></div></td></tr></table></div>
       </details>
   </div>
@@ -1423,21 +1775,59 @@ response_type in [json, ssz]</p>
       <p>Returns finality checkpoints for state with given 'state_id'.
 In case finality is not yet achieved, checkpoint should return epoch 0 and ZERO_HASH as root.</p>
 
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>state_id</code></td>
+          <td>
+                <code><span title="beacon_client.utils.types.StateId">StateId</span></code>
+          </td>
+          <td><p>Element of [head, genesis, finalized, justified] or block number (int) or string starting with 0x</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
       <details class="quote">
         <summary>Source code in <code>beacon_client/beacon_endpoints.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">40</span>
-<span class="normal">41</span>
-<span class="normal">42</span>
-<span class="normal">43</span>
-<span class="normal">44</span>
-<span class="normal">45</span>
-<span class="normal">46</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_finality_checkpoints_from_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_id</span><span class="p">:</span> <span class="n">StateId</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span>
+<span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span>
+<span class="normal">67</span>
+<span class="normal">68</span>
+<span class="normal">69</span>
+<span class="normal">70</span>
+<span class="normal">71</span>
+<span class="normal">72</span>
+<span class="normal">73</span>
+<span class="normal">74</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_finality_checkpoints_from_state</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span> <span class="n">state_id</span><span class="p">:</span> <span class="n">StateId</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FinalityCheckpoints</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns finality checkpoints for state with given &#39;state_id&#39;.</span>
 <span class="sd">    In case finality is not yet achieved, checkpoint should return epoch 0 and ZERO_HASH as root.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        state_id: Element of [head, genesis, finalized, justified] or block number (int) or string starting with 0x</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_check_state_id</span><span class="p">(</span><span class="n">state_id</span><span class="p">)</span>
-    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;/eth/v1/beacon/states/</span><span class="si">{</span><span class="n">state_id</span><span class="si">}</span><span class="s2">/finality_checkpoints&quot;</span><span class="p">)</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;/eth/v1/beacon/states/</span><span class="si">{</span><span class="n">state_id</span><span class="si">}</span><span class="s2">/finality_checkpoints&quot;</span>
+    <span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">parse_json</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">],</span> <span class="n">FinalityCheckpoints</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">data</span>
 </code></pre></div></td></tr></table></div>
       </details>
   </div>
@@ -1458,19 +1848,49 @@ In case finality is not yet achieved, checkpoint should return epoch 0 and ZERO_
   
       <p>Returns Fork object for state with given 'state_id'.</p>
 
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>state_id</code></td>
+          <td>
+                <code><span title="beacon_client.utils.types.StateId">StateId</span></code>
+          </td>
+          <td><p>Element of [head, genesis, finalized, justified] or block number (int) or string starting with 0x</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
       <details class="quote">
         <summary>Source code in <code>beacon_client/beacon_endpoints.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">33</span>
-<span class="normal">34</span>
-<span class="normal">35</span>
-<span class="normal">36</span>
-<span class="normal">37</span>
-<span class="normal">38</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_fork_from_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_id</span><span class="p">:</span> <span class="n">StateId</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_fork_from_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_id</span><span class="p">:</span> <span class="n">StateId</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Fork</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns Fork object for state with given &#39;state_id&#39;.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        state_id: Element of [head, genesis, finalized, justified] or block number (int) or string starting with 0x</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_check_state_id</span><span class="p">(</span><span class="n">state_id</span><span class="p">)</span>
-    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;/eth/v1/beacon/states/</span><span class="si">{</span><span class="n">state_id</span><span class="si">}</span><span class="s2">/fork&quot;</span><span class="p">)</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;/eth/v1/beacon/states/</span><span class="si">{</span><span class="n">state_id</span><span class="si">}</span><span class="s2">/fork&quot;</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">parse_json</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">],</span> <span class="n">Fork</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">data</span>
 </code></pre></div></td></tr></table></div>
       </details>
   </div>
@@ -1493,15 +1913,19 @@ In case finality is not yet achieved, checkpoint should return epoch 0 and ZERO_
 
       <details class="quote">
         <summary>Source code in <code>beacon_client/beacon_endpoints.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span>
-<span class="normal">21</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_genesis</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_genesis</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GenesisDetails</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Retrieve details of the chain&#39;s genesis which can be used to identify chain.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span><span class="s2">&quot;/eth/v1/beacon/genesis&quot;</span><span class="p">)</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span><span class="s2">&quot;/eth/v1/beacon/genesis&quot;</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">parse_json</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">],</span> <span class="n">GenesisDetails</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">data</span>
 </code></pre></div></td></tr></table></div>
       </details>
   </div>
@@ -1522,23 +1946,67 @@ In case finality is not yet achieved, checkpoint should return epoch 0 and ZERO_
   
       <p>Retrieves block headers matching given query. By default it will fetch current head slot blocks.</p>
 
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>slot</code></td>
+          <td>
+                <code><span title="typing.Union">Union</span>[<span title="beacon_client.utils.types.Slot">Slot</span>, None]</code>
+          </td>
+          <td><p>Restrict returned values to those matching the supplied slot</p></td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>parent_root</code></td>
+          <td>
+                <code><span title="typing.Union">Union</span>[<span title="beacon_client.utils.types.Root">Root</span>, None]</code>
+          </td>
+          <td><p>Restrict returned values to those matching the supplied parent_root</p></td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
       <details class="quote">
         <summary>Source code in <code>beacon_client/beacon_endpoints.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">163</span>
-<span class="normal">164</span>
-<span class="normal">165</span>
-<span class="normal">166</span>
-<span class="normal">167</span>
-<span class="normal">168</span>
-<span class="normal">169</span>
-<span class="normal">170</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_headers</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">,</span> <span class="n">slot</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">parent_root</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">231</span>
+<span class="normal">232</span>
+<span class="normal">233</span>
+<span class="normal">234</span>
+<span class="normal">235</span>
+<span class="normal">236</span>
+<span class="normal">237</span>
+<span class="normal">238</span>
+<span class="normal">239</span>
+<span class="normal">240</span>
+<span class="normal">241</span>
+<span class="normal">242</span>
+<span class="normal">243</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_headers</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span> <span class="n">slot</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Slot</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">parent_root</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Root</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BeaconHeaderSummary</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Retrieves block headers matching given query. By default it will fetch current head slot blocks.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        slot: Restrict returned values to those matching the supplied slot</span>
+<span class="sd">        parent_root: Restrict returned values to those matching the supplied parent_root</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;slot&quot;</span><span class="p">:</span> <span class="n">slot</span><span class="p">,</span> <span class="s2">&quot;parent_root&quot;</span><span class="p">:</span> <span class="n">parent_root</span><span class="p">}</span>
-    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span><span class="s2">&quot;/eth/v1/beacon/headers&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span><span class="s2">&quot;/eth/v1/beacon/headers&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">parse_json</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">],</span> <span class="n">BeaconHeaderSummary</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">data</span>
 </code></pre></div></td></tr></table></div>
       </details>
   </div>
@@ -1559,17 +2027,49 @@ In case finality is not yet achieved, checkpoint should return epoch 0 and ZERO_
   
       <p>Retrieves block headers matching given query. By default it will fetch current head slot blocks.</p>
 
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>block_id</code></td>
+          <td>
+                <code><span title="beacon_client.utils.types.BlockId">BlockId</span></code>
+          </td>
+          <td><p>Return block header matching given block id</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
       <details class="quote">
         <summary>Source code in <code>beacon_client/beacon_endpoints.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">172</span>
-<span class="normal">173</span>
-<span class="normal">174</span>
-<span class="normal">175</span>
-<span class="normal">176</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_headers_from_block_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">block_id</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">245</span>
+<span class="normal">246</span>
+<span class="normal">247</span>
+<span class="normal">248</span>
+<span class="normal">249</span>
+<span class="normal">250</span>
+<span class="normal">251</span>
+<span class="normal">252</span>
+<span class="normal">253</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_headers_from_block_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">block_id</span><span class="p">:</span> <span class="n">BlockId</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BeaconHeaderSummary</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Retrieves block headers matching given query. By default it will fetch current head slot blocks.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        block_id: Return block header matching given block id</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;/eth/v1/beacon/headers/</span><span class="si">{</span><span class="n">block_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;/eth/v1/beacon/headers/</span><span class="si">{</span><span class="n">block_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">parse_json</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">],</span> <span class="n">BeaconHeaderSummary</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">data</span>
 </code></pre></div></td></tr></table></div>
       </details>
   </div>
@@ -1590,23 +2090,71 @@ In case finality is not yet achieved, checkpoint should return epoch 0 and ZERO_
   
       <p>Retrieves attestations known by the node but not necessarily incorporated into any block</p>
 
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>slot</code></td>
+          <td>
+                <code><span title="typing.Union">Union</span>[<span title="beacon_client.utils.types.Slot">Slot</span>, None]</code>
+          </td>
+          <td><p>Restrict returned values to those matching the supplied slot</p></td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>committee_index</code></td>
+          <td>
+                <code><span title="typing.Union">Union</span>[<span title="beacon_client.utils.types.CommitteeIndex">CommitteeIndex</span>, None]</code>
+          </td>
+          <td><p>Restrict returned values to those matching the supplied committee index</p></td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
       <details class="quote">
         <summary>Source code in <code>beacon_client/beacon_endpoints.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">205</span>
-<span class="normal">206</span>
-<span class="normal">207</span>
-<span class="normal">208</span>
-<span class="normal">209</span>
-<span class="normal">210</span>
-<span class="normal">211</span>
-<span class="normal">212</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_pool_attestations</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">,</span> <span class="n">slot</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">committee_index</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">301</span>
+<span class="normal">302</span>
+<span class="normal">303</span>
+<span class="normal">304</span>
+<span class="normal">305</span>
+<span class="normal">306</span>
+<span class="normal">307</span>
+<span class="normal">308</span>
+<span class="normal">309</span>
+<span class="normal">310</span>
+<span class="normal">311</span>
+<span class="normal">312</span>
+<span class="normal">313</span>
+<span class="normal">314</span>
+<span class="normal">315</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_pool_attestations</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">slot</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Slot</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">committee_index</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">CommitteeIndex</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Attestation</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Retrieves attestations known by the node but not necessarily incorporated into any block</span>
+<span class="sd">    Args:</span>
+<span class="sd">        slot: Restrict returned values to those matching the supplied slot</span>
+<span class="sd">        committee_index: Restrict returned values to those matching the supplied committee index</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;slot&quot;</span><span class="p">:</span> <span class="n">slot</span><span class="p">,</span> <span class="s2">&quot;committee_index&quot;</span><span class="p">:</span> <span class="n">committee_index</span><span class="p">}</span>
-    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span><span class="s2">&quot;/eth/v1/beacon/pool/attestations&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span><span class="s2">&quot;/eth/v1/beacon/pool/attestations&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">parse_json</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">],</span> <span class="n">Attestation</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">data</span>
 </code></pre></div></td></tr></table></div>
       </details>
   </div>
@@ -1629,15 +2177,19 @@ In case finality is not yet achieved, checkpoint should return epoch 0 and ZERO_
 
       <details class="quote">
         <summary>Source code in <code>beacon_client/beacon_endpoints.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">214</span>
-<span class="normal">215</span>
-<span class="normal">216</span>
-<span class="normal">217</span>
-<span class="normal">218</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_pool_attester_slashings</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">317</span>
+<span class="normal">318</span>
+<span class="normal">319</span>
+<span class="normal">320</span>
+<span class="normal">321</span>
+<span class="normal">322</span>
+<span class="normal">323</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_pool_attester_slashings</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Retrieves attester slashings known by the node but not necessarily incorporated into any block</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span><span class="s2">&quot;/eth/v1/beacon/pool/attester_slashings&quot;</span><span class="p">)</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span><span class="s2">&quot;/eth/v1/beacon/pool/attester_slashings&quot;</span><span class="p">)</span>
+    <span class="c1"># unparsed because it is very hard to test since slashing is rare</span>
+    <span class="k">return</span> <span class="n">value</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span>
 </code></pre></div></td></tr></table></div>
       </details>
   </div>
@@ -1660,15 +2212,19 @@ In case finality is not yet achieved, checkpoint should return epoch 0 and ZERO_
 
       <details class="quote">
         <summary>Source code in <code>beacon_client/beacon_endpoints.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">220</span>
-<span class="normal">221</span>
-<span class="normal">222</span>
-<span class="normal">223</span>
-<span class="normal">224</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_pool_proposer_slashings</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">325</span>
+<span class="normal">326</span>
+<span class="normal">327</span>
+<span class="normal">328</span>
+<span class="normal">329</span>
+<span class="normal">330</span>
+<span class="normal">331</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_pool_proposer_slashings</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Retrieves proposer slashings known by the node but not necessarily incorporated into any block</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span><span class="s2">&quot;/eth/v1/beacon/pool/proposer_slashings&quot;</span><span class="p">)</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span><span class="s2">&quot;/eth/v1/beacon/pool/proposer_slashings&quot;</span><span class="p">)</span>
+    <span class="c1"># unparsed because it is very hard to test since slashing is rare</span>
+    <span class="k">return</span> <span class="n">value</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span>
 </code></pre></div></td></tr></table></div>
       </details>
   </div>
@@ -1691,15 +2247,19 @@ In case finality is not yet achieved, checkpoint should return epoch 0 and ZERO_
 
       <details class="quote">
         <summary>Source code in <code>beacon_client/beacon_endpoints.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">226</span>
-<span class="normal">227</span>
-<span class="normal">228</span>
-<span class="normal">229</span>
-<span class="normal">230</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_pool_voluntary_exits</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">333</span>
+<span class="normal">334</span>
+<span class="normal">335</span>
+<span class="normal">336</span>
+<span class="normal">337</span>
+<span class="normal">338</span>
+<span class="normal">339</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_pool_voluntary_exits</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Retrieves voluntary exits known by the node but not necessarily incorporated into any block</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span><span class="s2">&quot;/eth/v1/beacon/pool/voluntary_exits&quot;</span><span class="p">)</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span><span class="s2">&quot;/eth/v1/beacon/pool/voluntary_exits&quot;</span><span class="p">)</span>
+    <span class="c1"># unparsed because it is very hard to test since slashing is rare</span>
+    <span class="k">return</span> <span class="n">value</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span>
 </code></pre></div></td></tr></table></div>
       </details>
   </div>
@@ -1734,9 +2294,9 @@ In case finality is not yet achieved, checkpoint should return epoch 0 and ZERO_
         <tr>
           <td><code>state_id</code></td>
           <td>
-                <code><span title="beacon_client.beacon_endpoints.BeaconEndpoints.StateId">StateId</span></code>
+                <code><span title="beacon_client.utils.types.StateId">StateId</span></code>
           </td>
-          <td><p>element of [head, genesis, finalized, justified] or block number (int) or string starting with 0x</p></td>
+          <td><p>Element of [head, genesis, finalized, justified] or block number (int) or string starting with 0x</p></td>
           <td>
               <em>required</em>
           </td>
@@ -1746,23 +2306,25 @@ In case finality is not yet achieved, checkpoint should return epoch 0 and ZERO_
 
       <details class="quote">
         <summary>Source code in <code>beacon_client/beacon_endpoints.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">23</span>
-<span class="normal">24</span>
-<span class="normal">25</span>
-<span class="normal">26</span>
-<span class="normal">27</span>
-<span class="normal">28</span>
-<span class="normal">29</span>
-<span class="normal">30</span>
-<span class="normal">31</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_state_root</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_id</span><span class="p">:</span> <span class="n">StateId</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_state_root</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_id</span><span class="p">:</span> <span class="n">StateId</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Root</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculates HashTreeRoot for state with given &#39;state_id&#39;. If state_id is root, same value will be returned.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        state_id: element of [head, genesis, finalized, justified] or block number (int) or string starting with 0x</span>
+<span class="sd">        state_id: Element of [head, genesis, finalized, justified] or block number (int) or string starting with 0x</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_check_state_id</span><span class="p">(</span><span class="n">state_id</span><span class="p">)</span>
-    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;/eth/v1/beacon/states/</span><span class="si">{</span><span class="n">state_id</span><span class="si">}</span><span class="s2">/root&quot;</span><span class="p">)</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;/eth/v1/beacon/states/</span><span class="si">{</span><span class="n">state_id</span><span class="si">}</span><span class="s2">/root&quot;</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">Root</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="s2">&quot;root&quot;</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">data</span>
 </code></pre></div></td></tr></table></div>
       </details>
   </div>
@@ -1783,31 +2345,75 @@ In case finality is not yet achieved, checkpoint should return epoch 0 and ZERO_
   
       <p>Retrieves the sync committees for the given state.</p>
 
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>state_id</code></td>
+          <td>
+                <code><span title="beacon_client.utils.types.StateId">StateId</span></code>
+          </td>
+          <td><p>Element of [head, genesis, finalized, justified] or block number (int) or string starting with 0x</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>epoch</code></td>
+          <td>
+                <code><span title="typing.Union">Union</span>[<span title="beacon_client.utils.types.Epoch">Epoch</span>, None]</code>
+          </td>
+          <td><p>Fetch committees for the given epoch. If not present then the committees for the epoch of the state will be obtained</p></td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
       <details class="quote">
         <summary>Source code in <code>beacon_client/beacon_endpoints.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">150</span>
-<span class="normal">151</span>
-<span class="normal">152</span>
-<span class="normal">153</span>
-<span class="normal">154</span>
-<span class="normal">155</span>
-<span class="normal">156</span>
-<span class="normal">157</span>
-<span class="normal">158</span>
-<span class="normal">159</span>
-<span class="normal">160</span>
-<span class="normal">161</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_sync_committees_from_state</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">,</span> <span class="n">state_id</span><span class="p">,</span> <span class="n">epoch</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">213</span>
+<span class="normal">214</span>
+<span class="normal">215</span>
+<span class="normal">216</span>
+<span class="normal">217</span>
+<span class="normal">218</span>
+<span class="normal">219</span>
+<span class="normal">220</span>
+<span class="normal">221</span>
+<span class="normal">222</span>
+<span class="normal">223</span>
+<span class="normal">224</span>
+<span class="normal">225</span>
+<span class="normal">226</span>
+<span class="normal">227</span>
+<span class="normal">228</span>
+<span class="normal">229</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_sync_committees_from_state</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span> <span class="n">state_id</span><span class="p">:</span> <span class="n">StateId</span><span class="p">,</span> <span class="n">epoch</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Epoch</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SyncCommitteeSummary</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Retrieves the sync committees for the given state.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        state_id: Element of [head, genesis, finalized, justified] or block number (int) or string starting with 0x</span>
+<span class="sd">        epoch: Fetch committees for the given epoch. If not present then the committees for the epoch of the state will be obtained</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s2">&quot;epoch&quot;</span><span class="p">:</span> <span class="n">epoch</span><span class="p">,</span>
     <span class="p">}</span>
-    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span>
         <span class="sa">f</span><span class="s2">&quot;/eth/v1/beacon/states/</span><span class="si">{</span><span class="n">state_id</span><span class="si">}</span><span class="s2">/sync_committees&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span>
     <span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">parse_json</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">],</span> <span class="n">SyncCommitteeSummary</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">data</span>
 </code></pre></div></td></tr></table></div>
       </details>
   </div>
@@ -1834,26 +2440,65 @@ There are no guarantees for the returned data in terms of ordering;
 the index and is returned for each balance,
 and can be used to confirm for which inputs a response has been returned.</p>
 
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>state_id</code></td>
+          <td>
+                <code><span title="beacon_client.utils.types.StateId">StateId</span></code>
+          </td>
+          <td><p>Element of [head, genesis, finalized, justified] or block number (int) or string starting with 0x</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>validator_list</code></td>
+          <td>
+                <code><span title="typing.Union">Union</span>[<span title="typing.List">List</span>[<span title="beacon_client.utils.types.ValidatorId">ValidatorId</span>], None]</code>
+          </td>
+          <td><p>List of validators identified by public key or validator index</p></td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
       <details class="quote">
         <summary>Source code in <code>beacon_client/beacon_endpoints.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">118</span>
-<span class="normal">119</span>
-<span class="normal">120</span>
-<span class="normal">121</span>
-<span class="normal">122</span>
-<span class="normal">123</span>
-<span class="normal">124</span>
-<span class="normal">125</span>
-<span class="normal">126</span>
-<span class="normal">127</span>
-<span class="normal">128</span>
-<span class="normal">129</span>
-<span class="normal">130</span>
-<span class="normal">131</span>
-<span class="normal">132</span>
-<span class="normal">133</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_validators_balances_from_state</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">,</span> <span class="n">state_id</span><span class="p">:</span> <span class="n">StateId</span><span class="p">,</span> <span class="n">validator_list</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_validators_balances_from_state</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span> <span class="n">state_id</span><span class="p">:</span> <span class="n">StateId</span><span class="p">,</span> <span class="n">validator_list</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">ValidatorId</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">BalanceSummary</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns filterable list of validators balances.</span>
 <span class="sd">    Balances will be returned for all indices or public key that match known validators.</span>
@@ -1862,11 +2507,16 @@ and can be used to confirm for which inputs a response has been returned.</p>
 <span class="sd">    There are no guarantees for the returned data in terms of ordering;</span>
 <span class="sd">    the index and is returned for each balance,</span>
 <span class="sd">    and can be used to confirm for which inputs a response has been returned.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        state_id: Element of [head, genesis, finalized, justified] or block number (int) or string starting with 0x</span>
+<span class="sd">        validator_list: List of validators identified by public key or validator index</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">validator_list</span><span class="p">}</span>
-    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span>
         <span class="sa">f</span><span class="s2">&quot;/eth/v1/beacon/states/</span><span class="si">{</span><span class="n">state_id</span><span class="si">}</span><span class="s2">/validator_balances&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span>
     <span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">parse_json</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">],</span> <span class="n">BalanceSummary</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">data</span>
 </code></pre></div></td></tr></table></div>
       </details>
   </div>
@@ -1893,37 +2543,173 @@ There are no guarantees for the returned data in terms of ordering;
 both the index and public key are returned for each validator,
 and can be used to confirm for which inputs a response has been returned.</p>
 
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>state_id</code></td>
+          <td>
+                <code><span title="beacon_client.utils.types.StateId">StateId</span></code>
+          </td>
+          <td><p>Element of [head, genesis, finalized, justified] or block number (int) or string starting with 0x</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>validator_list</code></td>
+          <td>
+                <code><span title="typing.Union">Union</span>[<span title="typing.List">List</span>[<span title="beacon_client.utils.types.ValidatorId">ValidatorId</span>], None]</code>
+          </td>
+          <td><p>List of validators identified by public key or validator index</p></td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>pending_initialized</code></td>
+          <td>
+                <code>bool</code>
+          </td>
+          <td><p>If true return validators with this status</p></td>
+          <td>
+                <code>False</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>pending_queued</code></td>
+          <td>
+                <code>bool</code>
+          </td>
+          <td><p>If true return validators with this status</p></td>
+          <td>
+                <code>False</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>active_ongoing</code></td>
+          <td>
+                <code>bool</code>
+          </td>
+          <td><p>If true return validators with this status</p></td>
+          <td>
+                <code>False</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>active_exiting</code></td>
+          <td>
+                <code>bool</code>
+          </td>
+          <td><p>If true return validators with this status</p></td>
+          <td>
+                <code>False</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>active_slashed</code></td>
+          <td>
+                <code>bool</code>
+          </td>
+          <td><p>If true return validators with this status</p></td>
+          <td>
+                <code>False</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>exited_unslashed</code></td>
+          <td>
+                <code>bool</code>
+          </td>
+          <td><p>If true return validators with this status</p></td>
+          <td>
+                <code>False</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>exited_slashed</code></td>
+          <td>
+                <code>bool</code>
+          </td>
+          <td><p>If true return validators with this status</p></td>
+          <td>
+                <code>False</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>withdrawal_possible</code></td>
+          <td>
+                <code>bool</code>
+          </td>
+          <td><p>If true return validators with this status</p></td>
+          <td>
+                <code>False</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>withdrawal_done</code></td>
+          <td>
+                <code>bool</code>
+          </td>
+          <td><p>If true return validators with this status</p></td>
+          <td>
+                <code>False</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>active</code></td>
+          <td>
+                <code>bool</code>
+          </td>
+          <td><p>If true return validators with this status</p></td>
+          <td>
+                <code>False</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>pending</code></td>
+          <td>
+                <code>bool</code>
+          </td>
+          <td><p>If true return validators with this status</p></td>
+          <td>
+                <code>False</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>exited</code></td>
+          <td>
+                <code>bool</code>
+          </td>
+          <td><p>If true return validators with this status</p></td>
+          <td>
+                <code>False</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>withdrawal</code></td>
+          <td>
+                <code>bool</code>
+          </td>
+          <td><p>If true return validators with this status</p></td>
+          <td>
+                <code>False</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
       <details class="quote">
         <summary>Source code in <code>beacon_client/beacon_endpoints.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 48</span>
-<span class="normal"> 49</span>
-<span class="normal"> 50</span>
-<span class="normal"> 51</span>
-<span class="normal"> 52</span>
-<span class="normal"> 53</span>
-<span class="normal"> 54</span>
-<span class="normal"> 55</span>
-<span class="normal"> 56</span>
-<span class="normal"> 57</span>
-<span class="normal"> 58</span>
-<span class="normal"> 59</span>
-<span class="normal"> 60</span>
-<span class="normal"> 61</span>
-<span class="normal"> 62</span>
-<span class="normal"> 63</span>
-<span class="normal"> 64</span>
-<span class="normal"> 65</span>
-<span class="normal"> 66</span>
-<span class="normal"> 67</span>
-<span class="normal"> 68</span>
-<span class="normal"> 69</span>
-<span class="normal"> 70</span>
-<span class="normal"> 71</span>
-<span class="normal"> 72</span>
-<span class="normal"> 73</span>
-<span class="normal"> 74</span>
-<span class="normal"> 75</span>
-<span class="normal"> 76</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 76</span>
 <span class="normal"> 77</span>
 <span class="normal"> 78</span>
 <span class="normal"> 79</span>
@@ -1954,10 +2740,55 @@ and can be used to confirm for which inputs a response has been returned.</p>
 <span class="normal">104</span>
 <span class="normal">105</span>
 <span class="normal">106</span>
-<span class="normal">107</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_validators_from_state</span><span class="p">(</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_validators_from_state</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">state_id</span><span class="p">:</span> <span class="n">StateId</span><span class="p">,</span>
-    <span class="n">validator_list</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">validator_list</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">ValidatorId</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">pending_initialized</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">pending_queued</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">active_ongoing</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -1971,7 +2802,7 @@ and can be used to confirm for which inputs a response has been returned.</p>
     <span class="n">pending</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">exited</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">withdrawal</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">ValidatorSummary</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns filterable list of validators with their balance, status and index.</span>
 <span class="sd">    Information will be returned for all indices or public key that match known validators.</span>
@@ -1980,8 +2811,23 @@ and can be used to confirm for which inputs a response has been returned.</p>
 <span class="sd">    There are no guarantees for the returned data in terms of ordering;</span>
 <span class="sd">    both the index and public key are returned for each validator,</span>
 <span class="sd">    and can be used to confirm for which inputs a response has been returned.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        state_id: Element of [head, genesis, finalized, justified] or block number (int) or string starting with 0x</span>
+<span class="sd">        validator_list: List of validators identified by public key or validator index</span>
+<span class="sd">        pending_initialized: If true return validators with this status</span>
+<span class="sd">        pending_queued: If true return validators with this status</span>
+<span class="sd">        active_ongoing: If true return validators with this status</span>
+<span class="sd">        active_exiting: If true return validators with this status</span>
+<span class="sd">        active_slashed: If true return validators with this status</span>
+<span class="sd">        exited_unslashed: If true return validators with this status</span>
+<span class="sd">        exited_slashed: If true return validators with this status</span>
+<span class="sd">        withdrawal_possible: If true return validators with this status</span>
+<span class="sd">        withdrawal_done: If true return validators with this status</span>
+<span class="sd">        active: If true return validators with this status</span>
+<span class="sd">        pending: If true return validators with this status</span>
+<span class="sd">        exited: If true return validators with this status</span>
+<span class="sd">        withdrawal: If true return validators with this status</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_check_state_id</span><span class="p">(</span><span class="n">state_id</span><span class="p">)</span>
     <span class="n">status</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">if</span> <span class="n">pending_initialized</span><span class="p">:</span>
         <span class="n">status</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;pending_initialized&quot;</span><span class="p">)</span>
@@ -2011,9 +2857,11 @@ and can be used to confirm for which inputs a response has been returned.</p>
         <span class="n">status</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;withdrawal&quot;</span><span class="p">)</span>
     <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">status</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Select at least one validator condition&quot;</span>
     <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="n">status</span><span class="p">,</span> <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">validator_list</span><span class="p">}</span>
-    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span>
         <span class="sa">f</span><span class="s2">&quot;/eth/v1/beacon/states/</span><span class="si">{</span><span class="n">state_id</span><span class="si">}</span><span class="s2">/validators&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span>
     <span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">parse_json</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">],</span> <span class="n">ValidatorSummary</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">data</span>
 </code></pre></div></td></tr></table></div>
       </details>
   </div>
@@ -2034,23 +2882,69 @@ and can be used to confirm for which inputs a response has been returned.</p>
   
       <p>Returns validator specified by state and id or public key along with status and balance.</p>
 
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>state_id</code></td>
+          <td>
+                <code><span title="beacon_client.utils.types.StateId">StateId</span></code>
+          </td>
+          <td><p>Element of [head, genesis, finalized, justified] or block number (int) or string starting with 0x</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>validator_id</code></td>
+          <td>
+                <code><span title="beacon_client.utils.types.ValidatorId">ValidatorId</span></code>
+          </td>
+          <td><p>Validator identified by public key or validator index</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
       <details class="quote">
         <summary>Source code in <code>beacon_client/beacon_endpoints.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">109</span>
-<span class="normal">110</span>
-<span class="normal">111</span>
-<span class="normal">112</span>
-<span class="normal">113</span>
-<span class="normal">114</span>
-<span class="normal">115</span>
-<span class="normal">116</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_validators_from_state_by_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_id</span><span class="p">:</span> <span class="n">StateId</span><span class="p">,</span> <span class="n">validator_id</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span>
+<span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_validators_from_state_by_id</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span> <span class="n">state_id</span><span class="p">:</span> <span class="n">StateId</span><span class="p">,</span> <span class="n">validator_id</span><span class="p">:</span> <span class="n">ValidatorId</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ValidatorSummary</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns validator specified by state and id or public key along with status and balance.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        state_id: Element of [head, genesis, finalized, justified] or block number (int) or string starting with 0x</span>
+<span class="sd">        validator_id: Validator identified by public key or validator index</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_check_state_id</span><span class="p">(</span><span class="n">state_id</span><span class="p">)</span>
-    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_url</span><span class="p">(</span>
         <span class="sa">f</span><span class="s2">&quot;/eth/v1/beacon/states/</span><span class="si">{</span><span class="n">state_id</span><span class="si">}</span><span class="s2">/validators/</span><span class="si">{</span><span class="n">validator_id</span><span class="si">}</span><span class="s2">&quot;</span>
     <span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">parse_json</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">],</span> <span class="n">ValidatorSummary</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">data</span>
 </code></pre></div></td></tr></table></div>
       </details>
   </div>
@@ -2142,10 +3036,10 @@ and can be used to confirm for which inputs a response has been returned.</p>
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "navigation.top", "navigation.instant"], "search": "../assets/javascripts/workers/search.ecf98df9.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "navigation.top", "navigation.instant"], "search": "../assets/javascripts/workers/search.5bf1dace.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.d691e9de.min.js"></script>
+      <script src="../assets/javascripts/bundle.37e9125f.min.js"></script>
       
     
   </body>
