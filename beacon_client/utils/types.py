@@ -2,7 +2,6 @@ from typing import NewType, Union, List
 from enum import Enum
 from dataclasses import dataclass
 from bitstring import BitArray
-from dacite import from_dict, Config
 from multiaddr import Multiaddr
 
 

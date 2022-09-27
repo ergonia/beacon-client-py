@@ -1,5 +1,5 @@
 from beacon_client.api import BeaconChainAPI
-from beacon_client.utils.types import Fork, DepositContract, ChainId
+from beacon_client.utils.types import Fork, DepositContract
 
 
 class TestConfigEndpoints:
