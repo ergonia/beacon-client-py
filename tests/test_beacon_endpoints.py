@@ -9,7 +9,6 @@ from beacon_client.utils.types import (
     ValidatorStatus,
     BalanceSummary,
     CommitteeSummary,
-    SyncCommitteeSummary,
     BeaconHeaderSummary,
     SignedBeaconBlockHeader,
     BeaconBlockHeader,

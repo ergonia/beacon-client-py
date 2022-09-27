@@ -10,20 +10,14 @@ from .utils.types import (
     Slot,
     Root,
     GenesisDetails,
-    Version,
-    Checkpoint,
     FinalityCheckpoints,
     ValidatorSummary,
-    Gwei,
-    Validator,
-    ValidatorStatus,
     BalanceSummary,
     CommitteeSummary,
     SyncCommitteeSummary,
     BeaconHeaderSummary,
     SignedBeaconBlock,
     Attestation,
-    ProposerSlashing,
     Fork
 )
 
@@ -276,7 +270,7 @@ class BeaconEndpoints:
                 return self._query_url(
                     f"/eth/v2/beacon/blocks/{block_id}", headers=headers
                 )
-            case other:
+            case _:
                 assert Exception("response_type must be in [json, ssz]")
 
     def get_block_root_from_block_id(self, block_id: BlockId) -> Root:
