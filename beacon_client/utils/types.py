@@ -2,7 +2,6 @@ from typing import NewType, Union, List
 from enum import Enum
 from dataclasses import dataclass
 from bitstring import BitArray
-from dacite import from_dict, Config
 from multiaddr import Multiaddr
 
 
@@ -89,6 +88,7 @@ ParticipationFlags = NewType("ParticipationFlags", BitArray)
 CommitteeIndex = NewType("CommitteeIndex", int)
 ValidatorIndex = NewType("ValidatorIndex", int)
 Gwei = NewType("Gwei", int)
+Wei = NewType("Wei", int)
 Version = NewType("Version", str)
 DomainType = NewType("DomainType", str)
 ForkDigest = NewType("ForkDigest", str)
@@ -97,6 +97,7 @@ BLSPubkey = NewType("BLSPubkey", str)
 BLSSignature = NewType("BLSSignature", str)
 ValidatorId = Union[ValidatorIndex, BLSPubkey]
 Bytes32 = NewType("Bytes32", str)
+Hash32 = NewType("Hash32", str)
 ChainId = NewType("ChainId", int)
 ExecutionAddress = NewType("ExecutionAddress", str)
 Enr = NewType("Enr", str)
@@ -311,6 +312,44 @@ class SyncAggregate:
 
 
 @dataclass
+class ExecutionPayload:
+    parent_hash: Hash32
+    fee_recipient: ExecutionAddress
+    state_root: Bytes32
+    receipts_root: Bytes32
+    logs_bloom: str  # list of logs_bloom which is not typed in the spec
+    prev_randao: Bytes32  # this is named incorrectly in the ethereum spec
+    block_number: int
+    gas_limit: int
+    gas_used: int
+    timestamp: int
+    extra_data: str
+    base_fee_per_gas: Wei
+    # Extra payload fields
+    block_hash: Hash32
+    transactions: List  # transaction not defined in the spec
+
+
+@dataclass
+class ExecutionPayloadHeader:
+    parent_hash: Hash32
+    fee_recipient: ExecutionAddress
+    state_root: Bytes32
+    receipts_root: Bytes32
+    logs_bloom: str
+    prev_randao: Bytes32  # this is named incorrectly in the ethereum spec
+    block_number: int
+    gas_limit: int
+    gas_used: int
+    timestamp: int
+    extra_data: str
+    base_fee_per_gas: Wei
+    # Extra payload fields
+    block_hash: Hash32
+    transactions_root: Root
+
+
+@dataclass
 class BeaconBlockBody:
     randao_reveal: BLSSignature
     eth1_data: Eth1Data  # Eth1 data vote
@@ -321,8 +360,9 @@ class BeaconBlockBody:
     attestations: List[Attestation]
     deposits: List[Deposit]
     voluntary_exits: List[SignedVoluntaryExit]
-    # [New in Altair]
-    sync_aggregate: SyncAggregate
+
+    sync_aggregate: SyncAggregate  # [New in Altair]
+    execution_payload: ExecutionPayload  # [New in Bellatrix]
 
 
 @dataclass
@@ -370,6 +410,8 @@ class BeaconState:
     # Sync
     current_sync_committee: SyncCommittee  # [New in Altair]
     next_sync_committee: SyncCommittee  # [New in Altair]
+    # Execution
+    latest_execution_payload_header: ExecutionPayloadHeader  # [New in Bellatrix]
 
 
 @dataclass

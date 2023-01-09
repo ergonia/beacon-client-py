@@ -38,3 +38,9 @@ class BeaconChainAPI(
             return response.text
         else:
             return response
+
+
+if __name__ == "__main__":
+    client = BeaconChainAPI("http://107.23.211.5:5052")
+    data = client.get_block_from_block_id(5538866)
+    print(data.message.body.execution_payload)
