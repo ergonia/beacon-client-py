@@ -14,6 +14,7 @@ from .types import (
     PeerState,
     ConnectionOrientation,
     ChainId,
+    Wei,
 )
 from dacite import from_dict, Config
 from bitstring import BitArray
@@ -21,6 +22,7 @@ from multiaddr import Multiaddr
 
 SimpleTypeHooks = {
     Gwei: lambda x: Gwei(int(x)),
+    Wei: lambda x: Wei(int(x)),
     ValidatorIndex: lambda x: ValidatorIndex(int(x)),
     CommitteeIndex: lambda x: CommitteeIndex(int(x)),
     Slot: lambda x: Slot(int(x)),

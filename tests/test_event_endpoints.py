@@ -7,10 +7,10 @@ class TestEventEndpoints:
 
     def test_stream_events_event_type(self):
         for event in self.client.stream_events(attestation=True):
+            assert event.event == "attestation"
             break
-        assert event.event == "attestation"
 
     def test_stream_events_event_data(self):
         for event in self.client.stream_events(attestation=True):
+            assert "aggregation_bits" in json.loads(event.data)
             break
-        assert "aggregation_bits" in json.loads(event.data)
