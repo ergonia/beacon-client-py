@@ -2,6 +2,7 @@ from beacon_client.api import BeaconChainAPI
 from beacon_client.utils.types import Fork, DepositContract, ChainId, Version, Epoch, ExecutionAddress
 
 
+
 class TestConfigEndpoints:
     client = BeaconChainAPI("http://localhost:5052")
 
