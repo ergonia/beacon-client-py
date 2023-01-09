@@ -18,7 +18,7 @@ from .utils.types import (
     BeaconHeaderSummary,
     SignedBeaconBlock,
     Attestation,
-    Fork
+    Fork,
 )
 
 

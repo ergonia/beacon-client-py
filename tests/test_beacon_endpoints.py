@@ -13,7 +13,16 @@ from beacon_client.utils.types import (
     SignedBeaconBlockHeader,
     BeaconBlockHeader,
     Attestation,
-    AttestationData, Version, Epoch, Gwei, ValidatorIndex, BLSPubkey, Bytes32, CommitteeIndex, Slot, BLSSignature,
+    AttestationData,
+    Version,
+    Epoch,
+    Gwei,
+    ValidatorIndex,
+    BLSPubkey,
+    Bytes32,
+    CommitteeIndex,
+    Slot,
+    BLSSignature,
     Hash32,
 )
 from bitstring import BitArray
@@ -33,7 +42,9 @@ class TestBeaconEndpoints:
         expected = GenesisDetails(
             genesis_fork_version=Version("0x00000000"),
             genesis_time=1606824023,
-            genesis_validators_root=Root("0x4b363db94e286120d76eb905340fdd4e54bfe9f06bf33ff6cf5ad27f511bfe95"),
+            genesis_validators_root=Root(
+                "0x4b363db94e286120d76eb905340fdd4e54bfe9f06bf33ff6cf5ad27f511bfe95"
+            ),
         )
         actual = self.client.get_genesis()
         assert actual == expected
@@ -54,15 +65,21 @@ class TestBeaconEndpoints:
         expected = FinalityCheckpoints(
             current_justified=Checkpoint(
                 epoch=Epoch(147920),
-                root=Root("0xd7aef74c750474d7a9af76c210fb5c0adb361d59571266a08e91b09182339a98"),
+                root=Root(
+                    "0xd7aef74c750474d7a9af76c210fb5c0adb361d59571266a08e91b09182339a98"
+                ),
             ),
             finalized=Checkpoint(
                 epoch=Epoch(147919),
-                root=Root("0xdac10002454d05664bb832b822131da6d7b0bbc17fa21fff8a376547a043a6ad"),
+                root=Root(
+                    "0xdac10002454d05664bb832b822131da6d7b0bbc17fa21fff8a376547a043a6ad"
+                ),
             ),
             previous_justified=Checkpoint(
                 epoch=Epoch(147919),
-                root=Root("0xdac10002454d05664bb832b822131da6d7b0bbc17fa21fff8a376547a043a6ad"),
+                root=Root(
+                    "0xdac10002454d05664bb832b822131da6d7b0bbc17fa21fff8a376547a043a6ad"
+                ),
             ),
         )
         actual = self.client.get_finality_checkpoints_from_state(state_id=4733490)
@@ -79,10 +96,14 @@ class TestBeaconEndpoints:
                 activation_epoch=Epoch(0),
                 effective_balance=Gwei(32000000000),
                 exit_epoch=Epoch(18446744073709551615),
-                pubkey=BLSPubkey("0x933ad9491b62059dd065b560d256d8957a8c402cc6e8d8ee7290ae11e8f7329267a8811c397529dac52ae1342ba58c95"),
+                pubkey=BLSPubkey(
+                    "0x933ad9491b62059dd065b560d256d8957a8c402cc6e8d8ee7290ae11e8f7329267a8811c397529dac52ae1342ba58c95"
+                ),
                 slashed=False,
                 withdrawable_epoch=Epoch(18446744073709551615),
-                withdrawal_credentials=Bytes32("0x00f50428677c60f997aadeab24aabf7fceaef491c96a52b463ae91f95611cf71"),
+                withdrawal_credentials=Bytes32(
+                    "0x00f50428677c60f997aadeab24aabf7fceaef491c96a52b463ae91f95611cf71"
+                ),
             ),
         )
         actual = self.client.get_validators_from_state(state_id=1000490, active=True)
@@ -99,15 +120,23 @@ class TestBeaconEndpoints:
                 activation_epoch=Epoch(0),
                 effective_balance=Gwei(32000000000),
                 exit_epoch=Epoch(18446744073709551615),
-                pubkey=BLSPubkey("0x933ad9491b62059dd065b560d256d8957a8c402cc6e8d8ee7290ae11e8f7329267a8811c397529dac52ae1342ba58c95"),
+                pubkey=BLSPubkey(
+                    "0x933ad9491b62059dd065b560d256d8957a8c402cc6e8d8ee7290ae11e8f7329267a8811c397529dac52ae1342ba58c95"
+                ),
                 slashed=False,
                 withdrawable_epoch=Epoch(18446744073709551615),
-                withdrawal_credentials=Bytes32("0x00f50428677c60f997aadeab24aabf7fceaef491c96a52b463ae91f95611cf71"),
+                withdrawal_credentials=Bytes32(
+                    "0x00f50428677c60f997aadeab24aabf7fceaef491c96a52b463ae91f95611cf71"
+                ),
             ),
         )
         actual = self.client.get_validators_from_state_by_id(
-            state_id=Root("0xc719e01b197a5a2f8f1796e11122009b845d95a19538baaa49362c04f4c74480"),
-            validator_id=BLSPubkey("0x933ad9491b62059dd065b560d256d8957a8c402cc6e8d8ee7290ae11e8f7329267a8811c397529dac52ae1342ba58c95"),
+            state_id=Root(
+                "0xc719e01b197a5a2f8f1796e11122009b845d95a19538baaa49362c04f4c74480"
+            ),
+            validator_id=BLSPubkey(
+                "0x933ad9491b62059dd065b560d256d8957a8c402cc6e8d8ee7290ae11e8f7329267a8811c397529dac52ae1342ba58c95"
+            ),
         )
         assert actual == expected
 
@@ -117,7 +146,9 @@ class TestBeaconEndpoints:
         actual = self.client.get_validators_balances_from_state(
             4733490,
             validator_list=[
-                BLSPubkey("0x933ad9491b62059dd065b560d256d8957a8c402cc6e8d8ee7290ae11e8f7329267a8811c397529dac52ae1342ba58c95")
+                BLSPubkey(
+                    "0x933ad9491b62059dd065b560d256d8957a8c402cc6e8d8ee7290ae11e8f7329267a8811c397529dac52ae1342ba58c95"
+                )
             ],
         )
         assert actual[0] == expected
@@ -484,17 +515,27 @@ class TestBeaconEndpoints:
 
     def test_get_headers(self):
         expected = BeaconHeaderSummary(
-            root=Root("0xd4046c8c2de7263edfd239e42e9dd892c07bb99c7222107908aac26767c39c8e"),
+            root=Root(
+                "0xd4046c8c2de7263edfd239e42e9dd892c07bb99c7222107908aac26767c39c8e"
+            ),
             canonical=True,
             header=SignedBeaconBlockHeader(
                 message=BeaconBlockHeader(
-                    body_root=Root("0x924a8bf65cc67827c25c76ddb7f376461e3c59033638e292668495bef17414c1"),
-                    parent_root=Root("0x8015f2fb159f85fd46686c09f6a588ec901f9cc11613f1cdeb24864414ca8f97"),
+                    body_root=Root(
+                        "0x924a8bf65cc67827c25c76ddb7f376461e3c59033638e292668495bef17414c1"
+                    ),
+                    parent_root=Root(
+                        "0x8015f2fb159f85fd46686c09f6a588ec901f9cc11613f1cdeb24864414ca8f97"
+                    ),
                     proposer_index=ValidatorIndex(170574),
                     slot=Slot(4733490),
-                    state_root=Root("0xc719e01b197a5a2f8f1796e11122009b845d95a19538baaa49362c04f4c74480"),
+                    state_root=Root(
+                        "0xc719e01b197a5a2f8f1796e11122009b845d95a19538baaa49362c04f4c74480"
+                    ),
                 ),
-                signature=BLSSignature("0xaa5e271443b1a2027e5b7a1d587c59d43854aad3926fa9424a2723b493536ee46d62bd2ccc74ec5bbbe480af81bcf17d07893feea8c11708d3d838b3e8fae3e426fb525a09192ecc8f364240e127f7c5296bcfb1921dc06831c6fdcee0f2316b"),
+                signature=BLSSignature(
+                    "0xaa5e271443b1a2027e5b7a1d587c59d43854aad3926fa9424a2723b493536ee46d62bd2ccc74ec5bbbe480af81bcf17d07893feea8c11708d3d838b3e8fae3e426fb525a09192ecc8f364240e127f7c5296bcfb1921dc06831c6fdcee0f2316b"
+                ),
             ),
         )
         actual = self.client.get_headers(slot=Slot(4733490))
@@ -502,17 +543,27 @@ class TestBeaconEndpoints:
 
     def test_get_headers_from_block_id(self):
         expected = BeaconHeaderSummary(
-            root=Root("0xd4046c8c2de7263edfd239e42e9dd892c07bb99c7222107908aac26767c39c8e"),
+            root=Root(
+                "0xd4046c8c2de7263edfd239e42e9dd892c07bb99c7222107908aac26767c39c8e"
+            ),
             canonical=True,
             header=SignedBeaconBlockHeader(
                 message=BeaconBlockHeader(
-                    body_root=Root("0x924a8bf65cc67827c25c76ddb7f376461e3c59033638e292668495bef17414c1"),
-                    parent_root=Root("0x8015f2fb159f85fd46686c09f6a588ec901f9cc11613f1cdeb24864414ca8f97"),
+                    body_root=Root(
+                        "0x924a8bf65cc67827c25c76ddb7f376461e3c59033638e292668495bef17414c1"
+                    ),
+                    parent_root=Root(
+                        "0x8015f2fb159f85fd46686c09f6a588ec901f9cc11613f1cdeb24864414ca8f97"
+                    ),
                     proposer_index=ValidatorIndex(170574),
                     slot=Slot(4733490),
-                    state_root=Root("0xc719e01b197a5a2f8f1796e11122009b845d95a19538baaa49362c04f4c74480"),
+                    state_root=Root(
+                        "0xc719e01b197a5a2f8f1796e11122009b845d95a19538baaa49362c04f4c74480"
+                    ),
                 ),
-                signature=BLSSignature("0xaa5e271443b1a2027e5b7a1d587c59d43854aad3926fa9424a2723b493536ee46d62bd2ccc74ec5bbbe480af81bcf17d07893feea8c11708d3d838b3e8fae3e426fb525a09192ecc8f364240e127f7c5296bcfb1921dc06831c6fdcee0f2316b"),
+                signature=BLSSignature(
+                    "0xaa5e271443b1a2027e5b7a1d587c59d43854aad3926fa9424a2723b493536ee46d62bd2ccc74ec5bbbe480af81bcf17d07893feea8c11708d3d838b3e8fae3e426fb525a09192ecc8f364240e127f7c5296bcfb1921dc06831c6fdcee0f2316b"
+                ),
             ),
         )
         actual = self.client.get_headers_from_block_id(block_id=4733490)
@@ -534,18 +585,26 @@ class TestBeaconEndpoints:
             aggregation_bits=BitArray(
                 "0xffffffffffffffffffffffffffffffffffffffffffffffffffff0f"
             ),
-            signature=BLSSignature("0x8e292242b012e0820ea28579efa776a336f1371345dbdfaad9df0b7158d0ae3492b8cec1a22779ad909f10d1cb2a4c570182ffad65c9fcf9ddc73105fc6b75af7984eb74660f10e5de01b4dbdeecd44b37d19a41fe10eec5a799d31f0daa2cb1"),
+            signature=BLSSignature(
+                "0x8e292242b012e0820ea28579efa776a336f1371345dbdfaad9df0b7158d0ae3492b8cec1a22779ad909f10d1cb2a4c570182ffad65c9fcf9ddc73105fc6b75af7984eb74660f10e5de01b4dbdeecd44b37d19a41fe10eec5a799d31f0daa2cb1"
+            ),
             data=AttestationData(
-                beacon_block_root=Root("0x8015f2fb159f85fd46686c09f6a588ec901f9cc11613f1cdeb24864414ca8f97"),
+                beacon_block_root=Root(
+                    "0x8015f2fb159f85fd46686c09f6a588ec901f9cc11613f1cdeb24864414ca8f97"
+                ),
                 index=CommitteeIndex(47),
                 slot=Slot(4733489),
                 source=Checkpoint(
                     epoch=Epoch(147920),
-                    root=Root("0xd7aef74c750474d7a9af76c210fb5c0adb361d59571266a08e91b09182339a98"),
+                    root=Root(
+                        "0xd7aef74c750474d7a9af76c210fb5c0adb361d59571266a08e91b09182339a98"
+                    ),
                 ),
                 target=Checkpoint(
                     epoch=Epoch(147921),
-                    root=Root("0x0e69a750d555cf8bb5ac46b1524d808bcbdec49173f6d8dd963f161a59fa4eac"),
+                    root=Root(
+                        "0x0e69a750d555cf8bb5ac46b1524d808bcbdec49173f6d8dd963f161a59fa4eac"
+                    ),
                 ),
             ),
         )
@@ -572,5 +631,6 @@ class TestBeaconEndpoints:
         block = self.client.get_block_from_block_id(5538866)
         execution_payload = block.message.body.execution_payload
         assert execution_payload.block_number == 16371163
-        assert execution_payload.parent_hash == Hash32("0x43cb018dafa0df9d9e255cede9e0d7d99bb27962a51a2e14615338d340c273ed")
-
+        assert execution_payload.parent_hash == Hash32(
+            "0x43cb018dafa0df9d9e255cede9e0d7d99bb27962a51a2e14615338d340c273ed"
+        )

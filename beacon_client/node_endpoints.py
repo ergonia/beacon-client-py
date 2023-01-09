@@ -1,4 +1,10 @@
-from .utils.types import PeerId, NetworkIdentity, PeerDescription, PeerSummary, SyncStatus
+from .utils.types import (
+    PeerId,
+    NetworkIdentity,
+    PeerDescription,
+    PeerSummary,
+    SyncStatus,
+)
 from typing import List
 from .utils.parsing import parse_json
 
